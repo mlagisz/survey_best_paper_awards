@@ -2,12 +2,13 @@
 
 [![CC BY 4.0][cc-by-shield]][cc-by].   
 
+> > Making "best paper" awards for young researchers more equitable and open.  
 
 ## Background  
 Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.  
 
 ## Aims 
-This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals, usually given to early career researchers. We will evaluate assessment criteria and historical biases in gender composition of the names of past awardees. Evaluation will be performed on a sample of awards from most respected journals and societies across disciplines. Results of our eveluations will be openly available and disseminated in the research community.     
+This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals. Such awards are usually given to early career researchers. In this project, we will evaluate assessment criteria and historical biases in gender composition of the names of past awardees. Evaluation will be performed on a sample of awards from most respected journals and societies across disciplines. Our findings will be openly available and disseminated in the research community.     
 
 > We expect that our findings will contribute to culture change fostering more equitable and open science.  
 
