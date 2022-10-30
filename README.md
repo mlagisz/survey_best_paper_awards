@@ -18,7 +18,7 @@ We invite early- and mid-career researchers across disciplines to contribute to 
 Overall:
 - We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.   
 - It will be possible to start contributing to this project during an in-person hackathon event at [AIMOS2022 conference](https://www.eventcreate.com/e/aimos2022), 28-30 November 2022, Melbourne, Australa. 
-- There will be also a folow-up virual hackathon after that to enable broad global participation. 
+- There will be also a folow-up virual hackathon (or two) after that to enable broad global participation. 
 - After this, we will work asynchroniously online until we complete all stages of the project.    
 - If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue.  
 - For more details see our [Contribution Guide](https://github.com/mlagisz/survey_best_paper_awards/blob/main/CONTRIBUTING.md).  
@@ -30,14 +30,16 @@ The project has main 4 Stages:
 - Preparing protocol.  
 - Piloting.  
 - Registration.  
+- Hackathon preparation.  
 
-### Stage 2: Data collection   
- - Creating award shortlist.   
- - Checking shortlists.  
- - Data extraction for included awards.  
- - Data cross-checking.  
+### Stage 2: Screening   
+- Screening journal lists from 27 Scimago Subject Areas rankings 
+- Creating award shortlist.   
+- Checking shortlists.  
 
-### Stage 1: Data processing  
+### Stage 1: Data extraction  
+- Data extraction for included awards.  
+- Data cross-checking.
 - Collecting additional data.  
 - Preliminary analyses.  
 
