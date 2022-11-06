@@ -1,6 +1,6 @@
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
-[![CC BY 4.0][cc-by-shield]][cc-by].   
+[![CC BY 4.0][cc-by-shield]][cc-by]   
 
 > Making "best paper" awards for young researchers more equitable and open.  
 
@@ -68,7 +68,7 @@ We expect all project contributors to familiarise themselves and follow our [Cod
 
 ## License 
 This work is licensed under a 
-[Creative Commons Attribution 4.0 International License][cc-by].   
+[Creative Commons Attribution 4.0 International License][cc-by]   
 [![CC BY 4.0][cc-by-image]][cc-by]   
 [cc-by]: http://creativecommons.org/licenses/by/4.0/
 [cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
