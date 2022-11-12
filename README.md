@@ -6,17 +6,17 @@
 
 (If you are reading this on GitHub, you can see thie repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/)🌍).   
 
-## Background   
-Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.  
+## 🔖 Background   
+Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.   
 
-## Aims and approach  
-This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals. Such awards are usually given to early career researchers. In this project, we will evaluate assessment criteria and historical biases in gender composition of the names of past awardees. Evaluation will be performed on a sample of awards from most respected journals and societies across disciplines. Our findings will be openly available and disseminated in the research community.     
+## 🏹 Aims and approach  
+This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals. Such awards are usually given to early career researchers. In this project, we will evaluate assessment criteria and historical biases in gender composition of the names of past awardees. Evaluation will be performed on a sample of awards from most respected journals and societies across disciplines. Our findings will be openly available and disseminated in the research community.      
 
-## Impact  
-We expect that our findings will contribute to culture change fostering more equitable and open science.  
+## 🪓 Impact  
+We expect that our findings will contribute to culture change fostering more equitable and open science.    
 
-## Contributing  
-We invite early- and mid-career researchers across disciplines to contribute to the project. :heart:    
+## 💛 Contributing  
+We invite early- and mid-career researchers across disciplines to contribute to the project.       
 
 Overall:   
 - We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.   
@@ -26,7 +26,7 @@ Overall:
 - If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue.  
 - For more details on how to contribute see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
 
-## Roadmap   
+## 🗺️ Roadmap   
 The project has main 4 Stages:  
 
 ### Stage 1: Planning   
@@ -56,17 +56,17 @@ The project has main 4 Stages:
 - Manuscript.   
 
 
-## Current status    
+## 🚉 Current status    
 Protocol preparation and piloting.   
 
-## Protocol   
+## 🚀 Protocol   
 Protocol will be publicly archived on OSF.  
 
-## Code of Conduct   
+## ⏰ Code of Conduct   
 We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      
 
-## Maintainer(s)
+## 🔧 Maintainer(s)
 * [Losia Lagisz](https://github.com/mlagisz).   
 
-## License 
+## 🖍️ License 
 This work is licensed under a [Creative Commons Attribution 4.0 International License (cc-by)](/LICENSE.md).   
