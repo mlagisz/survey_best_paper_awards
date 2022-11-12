@@ -1,5 +1,10 @@
 remote_theme: pages-themes/architect@v0.2.0
 plugins:
-- jekyll-remote-theme 
+  - jekyll-remote-theme 
+gems:
+  - jekyll-relative-links
+relative_links:
+  enabled: true
+  collections: true
 title: Survey of "Best Paper" awards
 description: Information about the project
