@@ -1,8 +1,9 @@
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
 
-Go to [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md).
-or [CODE_OF_CONDUCT](/project1.md)
+Go to [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md).  
+   
+or to  [CODE_OF_CONDUCT](/project1.md).  
 
 [![CC BY 4.0][cc-by-shield]][cc-by].   
 
