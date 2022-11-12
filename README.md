@@ -3,7 +3,7 @@
 
 Go to [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md).  
    
-or to  [CODE_OF_CONDUCT](/project1.md).  
+or to  [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md).  
 
 [![CC BY 4.0][cc-by-shield]][cc-by].   
 
