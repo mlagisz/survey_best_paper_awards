@@ -65,4 +65,4 @@ We expect all project contributors to familiarise themselves and follow our [COD
 * [Losia Lagisz](https://github.com/mlagisz).   
 
 ## License 
-This work is licensed under a [Creative Commons Attribution 4.0 International License (cc-by)](/LICENCE.md).   
+This work is licensed under a [Creative Commons Attribution 4.0 International License (cc-by)](/LICENSE.md).   
