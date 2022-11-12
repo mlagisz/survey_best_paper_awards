@@ -1,6 +1,6 @@
 ---
-layout: default
-title: main page
+layout: default  
+title: "main page"  
 ---
 
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
