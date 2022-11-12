@@ -1,12 +1,5 @@
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
-
-Go to [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md).  
-   
-or to  [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md).  
-
-[![CC BY 4.0][cc-by-shield]][cc-by].   
-
 > Making "best paper" awards for young researchers more equitable and open.  
 
 ## Background   
@@ -27,7 +20,7 @@ Overall:
 - There will be also a folow-up virual hackathon (or two) after the in-person hackathon to enable broad global participation. 
 - After this, we will work asynchroniously online until we complete all stages of the project.    
 - If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue.  
-- For more details on how to contribute see our [Contribution Guide](https://github.com/mlagisz/survey_best_paper_awards/blob/main/CONTRIBUTING.md).  
+- For more details on how to contribute see our [Contribution Guide](/CONTRIBUTIONS.md).  
 
 ## Roadmap   
 The project has main 4 Stages:  
@@ -66,15 +59,10 @@ Protocol preparation and piloting.
 Protocol will be publicly archived on OSF.  
 
 ## Code of Conduct   
-We expect all project contributors to familiarise themselves and follow our [Code of Conduct](https://github.com/mlagisz/survey_best_paper_awards/blob/main/CODE_OF_CONDUCT.md).   
+We expect all project contributors to familiarise themselves and follow our [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md).      
 
 ## Maintainer(s)
 * [Losia Lagisz](https://github.com/mlagisz).   
 
 ## License 
-This work is licensed under a 
-[Creative Commons Attribution 4.0 International License][cc-by]   
-[![CC BY 4.0][cc-by-image]][cc-by].      
-[cc-by]: http://creativecommons.org/licenses/by/4.0/. 
-[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png. 
-[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg.  
+This work is licensed under a [Creative Commons Attribution 4.0 International License (cc-by)](/LICENCE.md).   
