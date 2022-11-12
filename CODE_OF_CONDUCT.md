@@ -1,6 +1,6 @@
 ---
 title: Code of Conduct
-layout: template
+layout: default
 filename: CODE_OF_CONDUCT.md
 --- 
 
