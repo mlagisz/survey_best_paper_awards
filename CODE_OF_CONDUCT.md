@@ -4,6 +4,9 @@ layout: default
 filename: CODE_OF_CONDUCT.md
 --- 
 
+> Back to [Main Page](/README.md).    
+
+---
 ## Code of Conduct
 
 ### Our Pledge
@@ -75,3 +78,8 @@ members of the project's leadership.
 
 This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/), version 1.4,
 available [here](http://contributor-covenant.org/version/1/4).  
+
+---   
+
+> Back to [Main Page](/README.md).    
+
