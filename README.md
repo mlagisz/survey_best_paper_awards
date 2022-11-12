@@ -5,6 +5,9 @@ title: main page
 
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
+
+Go to [CODE_OF_CONDUCT](../CODE_OF_CONDUCT.md).
+
 [![CC BY 4.0][cc-by-shield]][cc-by].   
 
 > Making "best paper" awards for young researchers more equitable and open.  
