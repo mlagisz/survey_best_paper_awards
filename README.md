@@ -20,7 +20,7 @@ Overall:
 - There will be also a folow-up virual hackathon (or two) after the in-person hackathon to enable broad global participation. 
 - After this, we will work asynchroniously online until we complete all stages of the project.    
 - If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue.  
-- For more details on how to contribute see our [Contribution Guide](/CONTRIBUTING.md).  
+- For more details on how to contribute see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
 
 ## Roadmap   
 The project has main 4 Stages:  
@@ -59,7 +59,7 @@ Protocol preparation and piloting.
 Protocol will be publicly archived on OSF.  
 
 ## Code of Conduct   
-We expect all project contributors to familiarise themselves and follow our [CODE_OF_CONDUCT](/CODE_OF_CONDUCT.md).      
+We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      
 
 ## Maintainer(s)
 * [Losia Lagisz](https://github.com/mlagisz).   
