@@ -6,7 +6,7 @@
 <$nbsp>
 <$nbsp>
 
-You can see thie repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/) 🌍.   
+(If you are reading this on GitHub, you can see thie repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/)🌍).   
 
 ## Background   
 Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.  
