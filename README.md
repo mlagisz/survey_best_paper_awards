@@ -2,9 +2,7 @@
 
 **Our mission statement:** *Making "best paper" awards for young researchers more equitable and open.*  
 
-
-<$nbsp>
-<$nbsp>
+  
 
 (If you are reading this on GitHub, you can see thie repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/)🌍).   
 
