@@ -1,6 +1,6 @@
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
-> Making "best paper" awards for young researchers more equitable and open.  
+*Making "best paper" awards for young researchers more equitable and open.*  
 
 ## Background   
 Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.  
