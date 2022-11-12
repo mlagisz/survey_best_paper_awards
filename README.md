@@ -16,7 +16,7 @@ This project aims to conduct a survey of current practices in awarding “best p
 We expect that our findings will contribute to culture change fostering more equitable and open science.  
 
 ## Contributing  
-We invite early- and mid-career researchers across disciplines to contribute to the project.    
+We invite early- and mid-career researchers across disciplines to contribute to the project. :heart:    
 
 Overall:   
 - We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.   
