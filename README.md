@@ -1,3 +1,8 @@
+---
+layout: default
+title: main page
+---
+
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
 [![CC BY 4.0][cc-by-shield]][cc-by].   
