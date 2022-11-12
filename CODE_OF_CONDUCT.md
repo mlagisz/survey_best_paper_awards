@@ -1,3 +1,9 @@
+---
+title: Code of Conduct
+layout: template
+filename: CODE_OF_CONDUCT.md
+--- 
+
 ## Code of Conduct
 
 ### Our Pledge
