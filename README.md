@@ -1,16 +1,16 @@
 # Cross-disciplinary survey of access and assessment criteria of "best paper" awards  
 
-**Our mission statement:** *Making "best paper" awards for young researchers more equitable and open.*  
+**Our mission statement:** *Making "best paper" awards for young researchers more equitable and open.* 🌟  
 
   
 
-(If you are reading this on GitHub, you can see thie repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/)🌍).   
+(If you are reading this on GitHub, you can also see this repository as a webpage [here](https://mlagisz.github.io/survey_best_paper_awards/)🌍).   
 
 ## 🔖 Background   
 Research awards can propagate existing biases in academia in terms of rewarding novel results rather than robust and transparent research. They can also contribute to the “Matthew Effect” where already privileged groups become rewarded. As such, revealing which awards do/do not provide equitable access and evaluation can lead to systemic change in how publications, especially these by early career researchers, are assessed and recognised.   
 
 ## 🏹 Aims and approach  
-This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals. Such awards are usually given to early career researchers. In this project, we will evaluate assessment criteria and historical biases in gender composition of the names of past awardees. Evaluation will be performed on a sample of awards from most respected journals and societies across disciplines. Our findings will be openly available and disseminated in the research community.      
+This project aims to conduct a survey of current practices in awarding “best papers” awards by research journals and other organisations. Such awards are usually given to early career researchers, potentially influencing their futre academic career trajectory. In this project, we will evaluate accessibility, assessment criteria and historical biases in the lists of past awardees. Evaluation will be performed on a sample of awards from most respected journals and organisations across disciplines. Our findings will be openly available and disseminated in the research community.      
 
 ## 🪓 Impact  
 We expect that our findings will contribute to culture change fostering more equitable and open science.    
@@ -19,12 +19,16 @@ We expect that our findings will contribute to culture change fostering more equ
 We invite early- and mid-career researchers across disciplines to contribute to the project.       
 
 Overall:   
-- We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.   
-- It will be possible to start contributing to this project during an in-person hackathon event at [AIMOS2022 conference](https://www.eventcreate.com/e/aimos2022), 28-30 November 2022, Melbourne, Australa. 
-- There will be also a folow-up virual hackathon (or two) after the in-person hackathon to enable broad global participation. 
-- After this, we will work asynchroniously online until we complete all stages of the project.    
-- If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue.  
-- For more details on how to contribute see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
+- We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.  
+- You dont need any speciall skills - just attention to detail, Internet access and some time available.   
+- Fill in the Expression Of Interest (EOI) form at: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9)
+- One way to start contributing to this project is during an in-person hackathon event at the [AIMOS2022 conference](https://www.eventcreate.com/e/aimos2022), 28-30 November 2022, Melbourne, Australa. 
+- There will be also two virual hackathons hackathons on 6th and 9th of December to enable broad global participation. 
+- It is desirable to attend the hackathons to get familiar with the project and other particiapants, but attendance is not compulsory.
+- After the initial hackathons, we will work asynchroniously online until we complete all stages of the project.    
+- For more details on how to contribute and contributions recognition see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
+- We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).   
+- If you would like to comment on this project or provide suggestions to improve this project, feel free to open an issue on GitHub or reach directly to us via a dedicated Slack channel (invites will be sent to  project participants who filled in the EOI form: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9).  
 
 ## 🗺️ Roadmap   
 The project has main 4 Stages:  
@@ -41,8 +45,8 @@ The project has main 4 Stages:
 - Checking shortlists.  
 
 ### Stage 3: Data extraction  
-- Data extraction for included awards.   
-- Collecting additional data.    
+- Main data extraction for included awards.   
+- Collecting additional data on past winners.    
 - Data cross-checking.   
 - Preliminary analyses.    
 
@@ -51,16 +55,16 @@ The project has main 4 Stages:
 - Draft report.  
 - Contributors feedback.   
 - Final report.  
-- Sharing data and code in GitHub repository.  
+- Sharing data and code in a GitHub repository.  
 - Preprint in MetaRxiv.   
 - Manuscript.   
 
 
 ## 🚉 Current status    
-Protocol preparation and piloting.   
+Stage 1: Planning.    
 
 ## 🚀 Protocol   
-Protocol will be publicly archived on OSF.  
+Protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28).    
 
 ## ⏰ Code of Conduct   
 We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      
