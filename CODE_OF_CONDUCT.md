@@ -6,7 +6,7 @@ filename: CODE_OF_CONDUCT.md
 
 > Back to [Main Page](/README.md).    
 
-## Code of Conduct
+# Code of Conduct
 
 ### ⛱️ Our Pledge 
 
