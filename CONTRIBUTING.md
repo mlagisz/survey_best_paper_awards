@@ -8,7 +8,7 @@ filename: CONTRIBUTING.md
 
 
 # CONTRIBUTION GUIDE    
-for Cross-disciplinary survey of acces and assessment criteria of "best paper" awards.   
+
 
 **Our mission statement:** *Making "best paper" awards for young researchers more equitable and open.* 🌟  
 
