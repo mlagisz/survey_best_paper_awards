@@ -7,7 +7,8 @@ filename: CONTRIBUTING.md
 > Back to [Main Page](/README.md).    
 
 
-# Cross-disciplinary survey of acces and assessment criteria of "best paper" awards  
+# CONTRIBUTION GUIDE    
+for Cross-disciplinary survey of acces and assessment criteria of "best paper" awards.   
 
 **Our mission statement:** *Making "best paper" awards for young researchers more equitable and open.* 🌟  
 
@@ -17,7 +18,7 @@ We invite early- and mid-career researchers across disciplines to contribute to 
 
 **General:**
  1. We welcome researchers with all backgrounds and walks of life o contribute to any Stage (see above) of this project.   
- 2. You dont need any speciall skills - just attention to detail, Internet access and some time available.
+ 2. You dont need any speciall research skills - just attention to detail, Internet access and some time available.
  3. Fill in the Expression Of Interest (EOI) form at: https://forms.gle/J3WPWMTAyWJy3k1v9
  4. One way to start contributing to this project is during an in-person hackathon event at the AIMOS2022 conference, 28-30 November 2022, Melbourne, Australa.
  5. There will be also two virual hackathons hackathons on 6th and 9th of December to enable broad global participation.
@@ -66,14 +67,16 @@ All project participants who contributed any amount of work, and provided their 
 
 ## 📄 Co-authorship  
 Project participants with substantial and high-quality contributions (as defined below) will become co-authors of the manuscript. They will contribute to any or all of these: data extraction, checking, analyses and/or report drafting.   
-Substantial contributions could be achieved by performing any 3 of below tasks (each task can be done for more than one Subject Area and each will be independently counted as one task, e.g. you can screen three times and this will be counted as three tasks in total):  
-- completing screening for one Subject Area (100 journals or until 10 eligible awards are fond, whichever earlier)
-- extracting award data for or one Subject Area (up to 10 awards)
-- extracting past winners data for or one Subject Area (up to 10 awards)
-- cross checking any of the above tasks
-Authorship is also coditional on reading and approving the final manuscript draft before submission and providing all personal information (e.g., name, affiliation, email) needed for the submission.   
 
-Additional contribution oportunities will be available via data cleaning, analyses, visualisations and writing, as needed and at the discretion of the project leads.  
+Substantial contributions could be achieved by performing any 3 of below tasks (each task can be done for more than one Subject Area and each will be independently counted as one task, e.g. you can screen three times and this will be counted as three tasks in total):  
+- completing screening for one Subject Area (100 journals or until 10 eligible awards are found, whichever earlier)   
+- extracting award data for one Subject Area (up to 10 awards)   
+- extracting past winners data for one Subject Area (up to 10 awards)  
+- cross checking any of the above tasks   
+
+Authorship is also coditional on reading and approving the final manuscript draft before submission and providing all personal information (e.g., name, affiliation, email) needed for the submission.     
+
+Additional contribution oportunities will be available via data cleaning, analyses, visualisations and writing, as needed and at the discretion of the project leads.   
 
 In the manuscript, first and last authorship positions will be reserved to the project leads (they could be co-first and co-last positions). Subsequent authorship positions will be determined by the total amount and quality of contributions, as in the project records. For equal contributions the order of mid-authorship will be alphabetic. All authors must read and approve the final manuscript draft before submission. The manuscript will contain a CRediT statement detailing the roles of individual authors and contributors.   
 
