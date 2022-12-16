@@ -19,16 +19,14 @@ We expect that our findings will contribute to culture change fostering more equ
 We invite early- and mid-career researchers across disciplines to contribute to the project.       
 
 Overall:   
-- We welcome researchers with all backgrounds and walks of life o contribute to any Stage of this project (see below) .  
+- We welcome researchers with all backgrounds and walks of life o contribute to any Stage of this project (see below).   
 - You do not need any speciall research skills - just attention to detail, Internet access and some time available.   
 - Fill in the Expression Of Interest (EOI) form at: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9)
-- One way to start contributing to this project is during an in-person hackathon event at the [AIMOS2022 conference](https://www.eventcreate.com/e/aimos2022), 28-30 November 2022, Melbourne, Australa. 
-- There will be also two virual hackathons hackathons on 6th and 9th of December to enable broad global participation. 
-- It is desirable to attend the hackathons to get familiar with the project and other particiapants, but attendance is not compulsory.
-- After the initial hackathons, we will work asynchroniously online until we complete all Stages of the project.    
-- For more details on how to contribute and contributions recognition see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
+- We already had in-person and virual hackathons (information and feedback meetings) in November/December 2022, but we can schedule mor virtual meetings if you feel like you would like to chat with the leaders or other project participants. Send your suggestions!  
+- We can do all the work asynchroniously online until we complete all Stages of the project (see below).    
+- For more details on how to contribute and how we deal with recognising everybodys' contributions see our [CONTRIBUTION GUIDE](/CONTRIBUTING.md).  
 - We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).   
-- If you would like to comment on this project or provide suggestions to improve it, feel free to open an issue on GitHub or reach directly to us via a dedicated Slack channel (invites will be sent to  project participants who filled in the EOI form: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9).  
+- If you would like to comment on this project or provide suggestions to improve it, feel free to open an issue on GitHub or reach directly to us via a dedicated Slack channel (invites will be sent to  project participants who filled in the EOI form: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9) or via email (losialagisz@gmail.com).  
 
 ## 🗺️ Roadmap   
 The project has main 4 Stages:  
@@ -37,6 +35,7 @@ The project has main 4 Stages:
 - Preparing protocol.  
 - Piloting.  
 - Registration.  
+- Feedback on the protocol (we are currently here!).   
 - Hackathon preparation.   
 
 ### Stage 2: Screening   
@@ -64,7 +63,7 @@ The project has main 4 Stages:
 Stage 1: Planning.    
 
 ## 🚀 Protocol   
-Protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28).    
+Initial protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28). But we are now collecting some feedback and making minor adjustements to teh protocol before registering updated version.      
 
 ## ⏰ Code of Conduct   
 We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      
