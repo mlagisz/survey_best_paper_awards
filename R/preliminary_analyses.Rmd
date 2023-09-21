@@ -1,0 +1,582 @@
+---
+title: "preliminary_analyses"
+author: "ML"
+date: "16/04/2023"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(here)
+library(DT)
+library(ggimage)
+library(ggcharts)
+library(scales)
+
+## set a plotting theme
+theme_set(theme_classic(base_size = 14) + 
+            theme(panel.background = element_blank(), 
+                  plot.background = element_blank(), 
+                  legend.background = element_blank(), 
+                  text = element_text(colour = "white")))
+
+#check oout other themes: https://r-charts.com/ggplot2/themes/
+# library(ggthemr)
+# ggthemr("solarized")
+# ggthemr("freshe")
+# ggthemr("pale")
+ #call ggthemr_reset() #to reset to the default ggplot2 theme
+```
+
+Note: project github page: https://github.com/mlagisz/survey_best_paper_awards
+
+
+
+## Award characteristics
+
+### Load and process data
+
+```{r BP load and clean data}
+BPdata <- read_csv(file = here("data", "Survey-Best_paper_awards (Responses).csv"))
+#str(BPdata)
+dim(BPdata) #should be 268 - some empty words captured, which need to be removed
+names(BPdata)
+#View(BPdata)
+
+BPdata <- select(BPdata, !starts_with("...") ) #remove last few empty columns
+BPdata_orig_colnames <- names(BPdata) #store original column names
+names(BPdata) <- gsub(" ","_", names(BPdata)) #change spaces to _ in the column names
+
+#rename selected data columns
+BPdata <- BPdata %>% 
+rename(Award_name = "Full_name_of_the_award", 
+       Journal_name = "Full_name_of_the_awarding_journal", 
+       Award_description = "Paste_the_information_text_describing_the_award", 
+       Eligible = "Confirm_eligibility_of_the_award",
+       Awarding_journal = "Full_name_of_the_awarding_journal",
+       Awarding_society = "Full_name_of_the_awarding_society",
+       Awarding_publisher = "Full_name_of_the_awarding_publisher/other_body",  
+       Career_stage = "Target_career_stage_of_eligible_applicants,_as_stated_in_the_award_information",
+       Flexible_eligibility = "Flexibility_of_the_eligibility_criteria", 
+       Assessors_transparency = "Assessor_transparency", 
+       Open_science = "Valuing_Open_Science",  
+       Self_nomination = "Self-nomination_allowed"
+       )
+#names(BPdata)
+
+##remove rows with pilot extractions and empty "Scimago Subject Area" values
+BPdata <- BPdata[!is.na(BPdata$Scimago_Subject_Area), ]
+#dim(BPdata) #264 rows left
+
+
+length(unique(BPdata$Scimago_Subject_Area)) #30 - should be 27, needs cleaning
+table(BPdata$Scimago_Subject_Area)
+#BPdata$Scimago_Subject_Area[BPdata$Scimago_Subject_Area == "Health professions"] <- "Health Professions"
+#BPdata$Scimago_Subject_Area[BPdata$Scimago_Subject_Area == "Decision Science"] <- "Decision Sciences"
+#BPdata$Scimago_Subject_Area[BPdata$Scimago_Subject_Area == "U.V. Helava Award"] <- "Physics and Astronomy" #change "U.V. Helava Award"  change to "Physics and Astronomy"
+BPdata$Award_name <- gsub("^The ", "", BPdata$Award_name) #remove "The" at the beginning of award names
+BPdata$Awarding_society <- gsub("^The ", "", BPdata$Awarding_society) #remove "The" at the beginning of award names
+
+##How many awards per Scimago_Subject_Area
+table(BPdata$Scimago_Subject_Area) #note SA with >10 extracted awards: 
+#Business, Management and Accounting = 11
+#Chemical Engineering = 12
+#Environmental Science = 11
+#Health Professions = 11
+#Psychology = 11
+#Social Sciences = 13
+
+##Check award names - same award could have been extracted in different SA, or different awards have same names 
+table(duplicated(BPdata$Award_name)) #18 duplicated, 246 unique
+
+##View non-unique award names data
+BPdata %>%
+  group_by(Award_name) %>%
+  filter(n() > 1) %>% 
+  arrange(Award_name) %>%
+  ungroup() %>% 
+  View()
+
+
+BPdata$Censor <- 0 #add new column for censoring out duplicated award extraction records
+
+##manually resolving duplicated award names:
+
+#Decision Sciences / Computer Science: AIS Best Information Systems Publications Awards (ML double-extracted) -> include in Computer Science, remove and find replacement in Decision Sciences
+BPdata$Censor[BPdata$Award_name == "AIS Best Information Systems Publications Awards" & BPdata$Scimago_Subject_Area == "Decision Sciences"] <- 1 
+
+#Mathematics / Social Sciences: ASA-Wiley Best Statistical Analysis and Data Mining Paper Award (independently double-extracted) -> remove from Social Sciences
+BPdata$Censor[BPdata$Award_name == "ASA-Wiley Best Statistical Analysis and Data Mining Paper Award" & BPdata$Scimago_Subject_Area == "Social Sciences"] <- 1 
+
+#Energy / Chemistry / Materials Science: Annual Best Paper Award for Engineered Science (independently double-extracted) -> remove from Energy and Chemistry
+BPdata$Censor[BPdata$Award_name == "Best Paper Award for Engineered Science" & BPdata$Scimago_Subject_Area == "Energy"] <- 1 
+BPdata$Censor[BPdata$Award_name == "Annual Best Paper Award for Engineered Science" & BPdata$Scimago_Subject_Area == "Chemistry"] <- 1 
+
+#Computer Science / Engineering: Annual Reviews in Control Paper Prize (independently double-extracted) -> include in Computer Science, remove and find replacement in Engineering
+BPdata$Censor[BPdata$Award_name == "Annual Reviews in Control Paper Prize" & BPdata$Scimago_Subject_Area == "Engineering"] <- 1 
+
+#Chemistry / Materials Science: Chemistry of Materials Lectureship and Best Paper Award (independently double-extracted) -> remove from Materials Science
+BPdata$Censor[BPdata$Award_name == "Chemistry of Materials Lectureship and Best Paper Award" & BPdata$Scimago_Subject_Area == "Materials Science"] <- 1 
+
+#Pharmacology, Toxicology and Pharmaceutics / Immunology and Microbiology: Emerging Microbes & Infections Best Paper Award (independently double-extracted) -> include in Pharmacology, remove and find replacement in Immunology
+BPdata$Censor[BPdata$Award_name == "Emerging Microbes & Infections Best Paper Award" & BPdata$Scimago_Subject_Area == "Immunology and Microbiology"] <- 1 
+
+#Decision Sciences / Social Sciences: Information Systems Research Best Paper (independently double-extracted) -> remove from Social Sciences
+BPdata$Censor[BPdata$Award_name == "Information Systems Research Best Paper" & BPdata$Scimago_Subject_Area == "Social Sciences"] <- 1 
+
+#Decision Sciences / Business, Management and Accounting: M&SOM Best Paper Award (independently double-extracted) -> remove from Business
+BPdata$Censor[BPdata$Award_name == "M&SOM Best Paper Award" & BPdata$Scimago_Subject_Area == "Business, Management and Accounting"] <- 1 
+
+#Chemical Engineering / Engineering / Materials Science: Materials Horizons Outstanding Paper Award (independently double-extracted) ->  include in Computer Science, remove from Chemical Engineering, remove and find replacement in Engineering
+BPdata$Censor[BPdata$Award_name == "Materials Horizons Outstanding Paper Award" & BPdata$Scimago_Subject_Area == "Chemical Engineering"] <- 1 
+BPdata$Censor[BPdata$Award_name == "Materials Horizons Outstanding Paper Award" & BPdata$Scimago_Subject_Area == "Engineering"] <- 1 
+
+#Health Professions: Paper of the Year - 2 different journals -> rename awards by adding journal names (also clean journal names)
+BPdata[BPdata$Award_name == "Paper of the Year", "Awarding_journal"]
+#BPdata$Award_name[BPdata$Award_name == "Paper of the Year"] <- BPdata$Awarding_journal[BPdata$Award_name == "Paper of the Year"]
+#BPdata$Awarding_journal[BPdata$Awarding_journal == "Exercise and Sport Sciences Reviews: Paper of the Year"] <- "Exercise and Sport Sciences Reviews"
+#BPdata$Awarding_journal[BPdata$Awarding_journal == "The Scandinavian Journal of Medicine and Science in Sports Paper of the Year"] <- "The Scandinavian Journal of Medicine and Science in Sports"
+
+#Psychology / Business, Management and Accounting: Personnel Psychology Best Paper Award (independently double-extracted) -> remove from Psychology
+BPdata$Censor[BPdata$Award_name == "Personnel Psychology Best Paper Award" & BPdata$Scimago_Subject_Area == "Psychology"] <- 1 
+
+#Chemistry / Chemical Engineering: Proceedings of the Combustion Institute Distinguished Papers (independently double-extracted) -> remove from Chemical Engineering
+BPdata$Censor[BPdata$Award_name == "Proceedings of the Combustion Institute Distinguished Papers" & BPdata$Scimago_Subject_Area == "Chemical Engineering"] <- 1 
+
+#Biochemistry, Genetics and Molecular Biology / Agricultural and Biological Sciences: Publisher's Award for Excellence in Systematic Research (ML double-extracted)  -> include in Biochemistry, remove and find replacement in Agricultural
+BPdata$Censor[BPdata$Award_name == "Publisher's Award for Excellence in Systematic Research" & BPdata$Scimago_Subject_Area == "Agricultural and Biological Sciences"] <- 1 
+
+#Biochemistry	/ Agricultural and Biological Sciences: Raymond L. Lindeman Award (independently double-extracted) -> include in Biochemistry, remove and find replacement in Earth
+BPdata$Censor[BPdata$Award_name == "Raymond L. Lindeman Award" & BPdata$Scimago_Subject_Area == "Earth and Planetary Sciences"] <- 1 
+
+#Psychology / Social Sciences / Business, Management and Accounting: The Leadership Quarterly Best Article Award (independently triple-extracted) ->  remove from Social Sciences and remove from Business
+BPdata$Censor[BPdata$Award_name == "The Leadership Quarterly Best Article Award" & BPdata$Scimago_Subject_Area == "Social Sciences"] <- 1 
+BPdata$Censor[BPdata$Award_name == "The Leadership Quarterly Best Article Award" & BPdata$Scimago_Subject_Area == "Business, Management and Accounting"] <- 1 
+
+#Immunology and Microbiology	/ Agricultural and Biological Sciences: ISME Journal Best Paper Award (independently double-extracted) -> include in Immunology and Microbiology, remove and find replacement in Agricultural and Biological Sciences
+BPdata$Censor[BPdata$Award_name == "ISME Journal Best Paper Award" & BPdata$Scimago_Subject_Area == "Agricultural and Biological Sciences"] <- 1 
+
+
+##NOTE: 13 awards (5%) were doubly-extracted
+
+##remove rows with censored awards
+BPdata <- BPdata[BPdata$Censor == 0, ]
+#dim(BPdata) #247 rows left
+
+##View non-unique journal names
+BPdata %>%
+  group_by(Awarding_journal) %>%
+  filter(n() > 1) %>% 
+  filter(!is.na(Awarding_journal)) %>%
+  arrange(Awarding_journal) %>%
+  ungroup() %>% 
+  View()
+  
+##26 rows with many similar award names - manually resolving duplicated award names:
+
+#Social Sciences  / Arts and Humanities: ASQ Award for Scholarly Contribution Winners (independently double-extracted) -> include in Social Sciences, remove and find replacement in Arts and Humanities
+BPdata$Censor[BPdata$Award_name == "ASQ Award for Scholarly Contribution Winners" & BPdata$Scimago_Subject_Area == "Arts and Humanities"] <- 1 
+
+#Engineering  /Materials Science: Cement and Concrete Research Le Chatelier Awards (independentlydouble-extracted) -> include in Materials Science, remove and find replacement in Engineering
+BPdata$Censor[BPdata$Award_name == "Cement and Concrete Research Le Chatelier Awards" & BPdata$Scimago_Subject_Area == "Engineering"] <- 1 
+
+#Nursing  / Arts and Humanities: Clinical & Translational Immunology Publication of the Year Award (independently double-extracted) -> include in Social Sciences, remove and find replacement in Nursing
+BPdata$Censor[BPdata$Award_name == "Clinical & Translational Immunology Publication of the Year Award" & BPdata$Scimago_Subject_Area == "Nursing"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "Clinical and Translational Immunology (CTI) PUBLICATION OF THE YEAR AWARDS
+"] <- "Clinical & Translational Immunology Publication of the Year Award" #fix name
+
+#Materials Science / Energy: Annual Best Paper Award for Engineered Science (ML double-extracted) -> include in Material Sciences, remove and find replacement in Energy
+BPdata$Censor[BPdata$Award_name == "Annual Best Paper Award for Engineered Science" & BPdata$Scimago_Subject_Area == "Energy"] <- 1 
+
+#Environmental Science  / Energy: Environmental Research Letters Best Article Award (ML double-extracted) -> include in Environmental Science, remove and find replacement in Energy
+BPdata$Censor[BPdata$Award_name == "Environmental Research Letters Best Article Award" & BPdata$Scimago_Subject_Area == "Energy"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "Environmental Research Letters Best Article"] <- "Environmental Research Letters Best Article Award" #fix name
+
+#Decision Sciences  / Computer Science: Information Systems Research (ISR) Best Paper (ML double-extracted) -> include in Computer Science, remove and find replacement in Decision Sciences
+BPdata$Censor[BPdata$Award_name == "Information Systems Research Best Paper" & BPdata$Scimago_Subject_Area == "Decision Sciences"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "Information Systems Research (ISR) Best Paper"] <- "Information Systems Research Best Paper" #fix name
+
+#Biochemistry, Genetics and Molecular Biology / Pharmacology, Toxicology and Pharmaceutics / Immunology and Microbiology: Journal for ImmunoTherapy of Cancer Best Paper Award (independently double-extracted) -> include in Biochemistry, Genetics and Molecular Biology, remove and find replacement in Pharmacology, Toxicology and Pharmaceutics and Immunology and Microbiology
+BPdata$Censor[BPdata$Award_name == "Journal for ImmunoTherapy of Cancer Best Paper Award" & BPdata$Scimago_Subject_Area == "Pharmacology, Toxicology and Pharmaceutics"] <- 1 
+BPdata$Censor[BPdata$Award_name == "JITC Best Basic Tumor Immunology Paper" & BPdata$Scimago_Subject_Area == "Immunology and Microbiology"] <- 1 
+
+#Social Sciences / Arts and Humanities / 	Business, Management and Accounting: Journal of Consumer Research Best Article Award / Feber Award (independently double-extracted) -> include in Business, Management and Accounting, remove and find replacement in Social Sciences / Arts and Humanities 
+BPdata$Censor[BPdata$Award_name == "Journal of Consumer Research Best Article Award" & BPdata$Scimago_Subject_Area == "Social Sciences"] <- 1 
+BPdata$Censor[BPdata$Award_name == "Ferber Award" & BPdata$Scimago_Subject_Area == "Arts and Humanities"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "Best Article Award" & BPdata$Scimago_Subject_Area == "Business, Management and Accounting"] <- "Journal of Consumer Research Best Article Award" #fix name
+
+#Agricultural and Biological Sciences / Environmental Science: BES John L Harper Early Career Researcher Award (ML double-extracted) -> include in Agricultural and Biological Sciences, remove and find replacement in Environmental Science
+BPdata$Censor[BPdata$Award_name == "British Ecological Society Harper Prize" & BPdata$Scimago_Subject_Area == "Environmental Science"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "BES John L Harper Early Career Researcher Award"] <- "British Ecological Society Harper Prize" #fix name
+
+#Chemical Engineering / Pharmacology, Toxicology and Pharmaceutics: Annual Best Paper Award for Engineered Science (ML double-extracted) -> include in Chemical Engineering, remove and find replacement in Pharmacology, Toxicology and Pharmaceutics
+BPdata$Censor[BPdata$Award_name == "Journal of Nanobiotechnology Article of the Year Award" & BPdata$Scimago_Subject_Area == "Pharmacology, Toxicology and Pharmaceutics"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "Journal of Nanobiotechnology (JNB) Article of the Year Award"] <- "Journal of Nanobiotechnology Article of the Year Award" #fix name
+
+#Biochemistry, Genetics and Molecular Biology / Agricultural and Biological Sciences: Society for Molecular Biology and Evolution Best Graduate Student Paper (ML double-extracted) -> include in Biochemistry, Genetics and Molecular Biology, remove and find replacement in Agricultural and Biological Sciences
+BPdata$Censor[BPdata$Award_name == "Society for Molecular Biology and Evolution Best Graduate Student Paper" & BPdata$Scimago_Subject_Area == "Agricultural and Biological Sciences"] <- 1 
+BPdata$Award_name[BPdata$Award_name == "SMBE Best Graduate Student Paper"] <- "Society for Molecular Biology and Evolution Best Graduate Student Paper" #fix name
+
+#Environmental Science  / Energy: Michelson Philanthropies & Science Prize for Immunology -> exclude (not for a single published article)
+BPdata$Censor[BPdata$Award_name == "Michelson Philanthropies & Science Prize for Immunology" & BPdata$Scimago_Subject_Area == "Immunology and Microbiology
+"] <- 1 
+
+##NOTE: another 5 awards independently double-extracted (total 18 out of 264 = 6.8%)
+
+table(BPdata$Eligible) #2 not eligible ("The same as Clinical and Translational Immunology (CTI) PUBLICATION OF THE YEAR AWARDS", Unpublished paperes are also allowed), 1 unclear ("No information other than list of winners" -> eligible) #View(BPdata[BPdata$Eligible != "yes (eligible award)", ])
+BPdata$Censor[BPdata$Eligible == "no (not eligible - make note on the reasons below and enter NA to the following compulsory questions, then submit)"] <- 1 
+
+##remove rows with censored awards
+BPdata <- BPdata[BPdata$Censor == 0, ]
+#dim(BPdata) #232 rows left
+#View(BPdata)
+BPdata$Award_name[BPdata$Award_name == "Best paper award"] <- "IEEE Signal Processing Society Best Paper Award" #fix name
+BPdata$Award_name[BPdata$Award_name == "Annual best article awards"] <- "Journal of Prosthodontics Best Paper Award" #fix name
+BPdata$Award_name[BPdata$Award_name == "Best Paper Awards"] <- "National Science Review Best Paper Award" #fix name
+BPdata$Award_name[BPdata$Award_name == "The 2022 Wakley Prize: compassion and connection"] <- "Wakley Prize" #fix name
+
+names(BPdata)
+  
+##summarise - simple tables of counts
+table(BPdata$Name_of_the_extracting_person) #extractors - 11 names 
+
+table(BPdata$Scimago_Subject_Area, useNA = "always") #17 have less than 10 awards- aggregate into Broader Subject Areas?
+
+table(is.na(BPdata$Awarding_journal)) #49 not awarded by journal, 79% by journal
+BPdata %>%
+  group_by(Awarding_journal) %>%
+  filter(n() > 1) %>% 
+  select(Awarding_journal) %>% 
+  filter(!is.na(Awarding_journal)) %>%
+  count() #list of 16 Awarding_journal with more than one awards across different SA - one journal (Science) but different SA and awards
+
+table(is.na(BPdata$Awarding_society)) #85 not awarded by society, 
+BPdata %>%
+  group_by(Awarding_society) %>%
+  filter(n() > 1) %>% 
+  select(Awarding_society) %>% 
+  filter(!is.na(Awarding_society)) %>%
+  count() #list of 16 societies with more than one awards across different SA (max.4)
+
+table(is.na(BPdata$Awarding_publisher), useNA = "always") #189 not awarded by publisher
+BPdata %>%
+  group_by(Awarding_publisher) %>%
+  filter(n() > 0) %>% 
+  select(Awarding_publisher) %>% 
+  filter(!is.na(Awarding_publisher)) %>%
+  count() #list of other awarding bodies mentioned
+
+table(BPdata$Award_cash, useNA = "always") #116 "yes" out of 232 (actually around 85+116 with descriptions = 89%)
+#View(BPdata[BPdata$Award_cash == "yes", ]) #see rows with "yes" - check against "not available" (description) in other columns
+
+table(BPdata$Career_stage, useNA = "always") #total of 38 restricted to any studen/early/mid-career, 164 "any carer stage", needs cleaning - aggregate?
+#View(BPdata[BPdata$Career_stage == "unclear" | BPdata$Career_stage == "any career stage, unclear", ]) #see rows with "unclear" - check against "not available" (description) in other columns
+
+table(BPdata$Flexible_eligibility, useNA = "always") #152 "not applicable", 49 "not available", only 6 - "yes" (out of around 38 with restrictions = 16%)
+#View(BPdata[BPdata$Flexible_eligibility == "yes", ]) #see rows with "yes"
+
+table(BPdata$Inclusivity_statement, useNA = "always") #only 2 "yes"
+#View(BPdata[BPdata$Inclusivity_statement == "yes", ]) #see rows with "yes"
+
+table(BPdata$Assessors_transparency, useNA = "always") #122 "yes"
+#View(BPdata[BPdata$Assessors_transparency == "yes", ]) #see rows with "yes"
+
+table(BPdata$Process_transparency, useNA = "always") #only 1 "yes"
+#View(BPdata[BPdata$Process_transparency == "yes", ]) #see rows with "yes" - should be "no"
+
+table(BPdata$Feedback_availability, useNA = "always") #0 "yes"
+
+table(BPdata$Criteria_transparency, useNA = "always") #44 yes
+#View(BPdata[BPdata$Criteria_transparency == "yes", ]) #see rows with "yes"
+
+table(BPdata$Open_science, useNA = "always") #1 "yes"
+#View(BPdata[BPdata$Open_science == "yes", ]) #see rows with "yes"
+
+table(BPdata$Self_nomination, useNA = "always") #31 yes
+#View(BPdata[BPdata$Self_nomination == "yes", ]) #see rows with "yes"
+
+table(BPdata$Letter_required, useNA = "always") #38 yes
+#View(BPdata[BPdata$Letter_required == "yes", ]) #see rows with "yes"
+
+table(BPdata$Awardee_list_most_recent_year, useNA = "always") #a few <2020 and 7 NA - check
+#View(BPdata[is.na(BPdata$Awardee_list_most_recent_year), ]) #see rows with NA
+
+table(BPdata$Awardee_list_earliest_year, useNA = "always") #some very old, 24 NA - check
+#View(BPdata[is.na(BPdata$Awardee_list_earliest_year), ]) #see rows with NA
+hist(BPdata$Awardee_list_earliest_year)
+length(BPdata$Awardee_list_earliest_year[BPdata$Awardee_list_earliest_year > 2010 & !is.na(BPdata$Awardee_list_earliest_year)] ) #107 from 2011-2023
+
+###Aggregate Subject Areas into larger groups (ad hoc for now - later do it according to Scimago journal list overlap)
+BPdata %>%  mutate(Scimago_Subject_Area_group = case_when(
+    Scimago_Subject_Area == "Agricultural and Biological Sciences" ~ "Biology",
+    Scimago_Subject_Area == "Arts and Humanities" ~ "Social",
+    Scimago_Subject_Area == "Biochemistry, Genetics and Molecular Biology" ~ "Biology",
+    Scimago_Subject_Area == "Business, Management and Accounting" ~ "Social",
+    Scimago_Subject_Area == "Chemical Engineering" ~ "Tech",
+    Scimago_Subject_Area == "Chemistry" ~ "Tech",
+    Scimago_Subject_Area == "Computer Science" ~ "Tech",
+    Scimago_Subject_Area == "Decision Sciences" ~ "Tech",
+    Scimago_Subject_Area == "Dentistry" ~ "Health",
+    Scimago_Subject_Area == "Earth and Planetary Sciences" ~ "Environment",
+    Scimago_Subject_Area == "Economics, Econometrics and Finance" ~ "Tech",
+    Scimago_Subject_Area == "Energy" ~ "Tech",
+    Scimago_Subject_Area == "Engineering" ~ "Tech",
+    Scimago_Subject_Area == "Environmental Science" ~ "Environment",
+    Scimago_Subject_Area == "Health Professions" ~ "Health",
+    Scimago_Subject_Area == "Immunology and Microbiology" ~ "Biology",
+    Scimago_Subject_Area == "Materials Science" ~ "Tech",
+    Scimago_Subject_Area == "Mathematics" ~ "Tech",
+    Scimago_Subject_Area == "Medicine" ~ "Health",
+    Scimago_Subject_Area == "Multidisciplinary" ~ "Multidisciplinary",
+    Scimago_Subject_Area == "Neuroscience" ~ "Biology",
+    Scimago_Subject_Area == "Nursing" ~ "Health",
+    Scimago_Subject_Area == "Pharmacology, Toxicology and Pharmaceutics" ~ "Health",
+    Scimago_Subject_Area == "Physics and Astronomy" ~ "Environment",
+    Scimago_Subject_Area == "Psychology" ~ "Social",
+    Scimago_Subject_Area == "Social Sciences" ~ "Social",
+    Scimago_Subject_Area == "Veterinary" ~ "Biology",
+    TRUE ~ Scimago_Subject_Area)
+    ) -> BPdata_aggr
+
+#table(BPdata_aggr$Scimago_Subject_Area_group)
+#table(table(BPdata$Scimago_Subject_Area))
+
+```
+
+
+TODO:
+- do additional searches for awards?
+- reconcile number of "not applicable" across columns and award description text
+- check award winners list against extracted earliest and most recent award years
+- clean and estimate length of the award description text
+- code which criteria explicitly mention impact/citations/download (metrics-driven)
+- code amount award cash (converted to USD)?
+- code whether contact information is available?
+- code whether award was to the paper(all authors as a team) or a named author (or two)
+- extract gender and affiliation country data for named authors within last 10 years (2013-2022)
+- collect doi of all awarded papers within last 10 years (2013-2022)
+- stat analyses of this data
+- visualise all main results
+- finalise code and write up
+
+
+
+################### OLD
+#remove excluded award from Oecologia and create a new column Award by combining journal and award names: 
+BPdata %>% filter(Journal_name != "Oecologia") %>% 
+  mutate(Award = case_when(Journal_name == "Molecular Biology & Evolution; Society for Molecular Biology and Evolution" ~ "MolBiolEvol / SMBE Best Graduate Student Paper",
+                           Journal_name == "Genome Biology & Evolution; Society for Molecular Biology and Evolution" ~ "GenomeBiolEvol / SMBE Best Graduate Student Paper",
+                          Journal_name == "Journal of Experimental Biology; The Company of Biologists" ~ "JExpBiol / CoB Outstanding Paper Prize"
+                           )
+         ) -> BPdata
+
+
+#Create reverse values on Letter_not_required - so "yes" is better
+BPdata %>% 
+  mutate(Letter_not_required = case_when(Letter_required == "yes" ~ "no",
+                           Letter_required == "no" ~ "yes",
+                           Letter_required == "uncelar" ~ "unclear",
+                           )) -> BPdata
+
+#BPdata$Award
+
+#set a custom order of Award levels for plotting 
+BPdata <- BPdata %>% mutate(Award = factor(Award, levels = c("Evolution / SSE Outstanding Dissertation Award", 
+                                                "AmNat / ASN Student Paper Award", 
+                                                "EcolLett / CNRS ECR Award",
+                                                "FunctEcol / BES Haldane ECR Award",
+                                                "JEvolutionBiol / ESEB Stearns Graduate Student Prize",
+                                                "JExpBiol / CoB Outstanding Paper Prize",
+                                                "MethodsEcolEvol / BES Robert May Prize",
+                                                "MolBiolEvol / SMBE Best Graduate Student Paper",
+                                                "GenomeBiolEvol / SMBE Best Graduate Student Paper",
+                                                "any journal / ESA George Mercer Award"
+                                                )))
+levels(BPdata$Award)
+```
+
+### Tables
+
+Journal-related descriptive and categorical data - as a table
+
+```{r BP table using , eval=TRUE}
+
+#prepare data - select columns with descriptive values on the awarding societies
+BPdata %>% select(Award, Journal_name, Disciplinary_focus, Geographical_range, Career_stage, EDI_policies) -> BPdata1
+
+#format using functions from DT package:
+
+datatable(BPdata1, options = list(pageLength = 15, autoWidth = TRUE)) %>% 
+  formatStyle(columns = colnames(BPdata1), 
+              backgroundColor = styleEqual(c("yes", "no", "unclear"), c("#009E73", "#D55E00", "#999999"))
+             )
+
+# unique(BPdata1$Journal_name)
+# table(BPdata1$Disciplinary_focus)
+# table(BPdata1$Geographical_range)
+# table(BPdata1$EDI_policies)
+# table(BPdata1$Career_stage)
+
+write.csv(BPdata1, here("tables","BP_awards_table_v0.csv"))
+```
+
+
+### Simple plots
+
+Plot a dot plot for columns with yes/no/unclear answers
+
+```{r BP dot plot, echo=FALSE}
+#prepare data - select columns with yes/no/unclear values
+BPdata %>% select(Award, Flexible_eligibility, Inclusivity_statement, Assessors_transparency, Process_transparency, Feedback_availability, Criteria_transparency, Open_science, Self_nomination, Letter_not_required)  -> BPdata2
+
+#reshape and set a custom order of factor levels for plotting (otherwise it will be reverse alphabetical order):
+BPdata2 %>%
+  gather(key = var_name, value = value, 2:ncol(BPdata2)) %>% 
+  arrange(value) %>%
+  mutate(var_name = factor(var_name, levels = rev(c("Flexible_eligibility", "Self_nomination", "Letter_not_required", "Inclusivity_statement", "Assessors_transparency", "Process_transparency", "Criteria_transparency", "Open_science", "Feedback_availability")))) %>%
+  ggplot(aes(y = var_name, x = Award, col = value)) +
+  geom_point(size = 5) +
+  scale_color_manual(values = c("#D55E00", "#999999", "#009E73")) +
+  theme_minimal() +
+  scale_x_discrete(position = "top") +
+  theme(panel.grid.major = element_blank(), axis.text.x = element_text(angle = 45, hjust = 0),
+        axis.title.x = element_blank(), axis.title.y = element_blank(), 
+        panel.border = element_rect(colour = "black", fill = NA),
+        plot.margin = margin(t = 25,  # Top margin
+                             r = 50,  # Right margin
+                             b = 10,  # Bottom margin
+                             l = 15)) # Left margin)
+
+ggsave(here("plots","BP_dotplot_v0.png"), #plot = p1, 
+       width = 15, height = 15, units = "cm", dpi = "retina")
+
+ggsave(here("plots","BP_dotplot_v0.pdf"), device = "pdf", #plot = p1, 
+       width = 15, height = 15, units = "cm", dpi = "retina")
+```
+
+Plot the range of years for which awardee info is available
+
+```{r BP plot award years, echo=FALSE}
+BPdata %>%
+  bar_chart(x = Award, y = Awardee_years) + 
+  theme_classic() +
+  ylim(0, 80) +
+  ylab("Year range of awardee data") 
+
+ggsave(here("plots", "BP_awards_years_range_v0.png"), width = 18, height = 10, units = "cm", dpi = "retina")
+```
+
+Plot awardee genders across award years
+
+```{r BP plot awardees gender by years, echo=FALSE}
+#Reshape data for plotting
+BPdata %>% select(Award, 
+                  N_female_2011_2020,
+                  N_male_2011_2020, 
+                  N_missing_2011_2020, 
+                  N_female_2001_2010, 
+                  N_male_2001_2010, 
+                  N_missing_2001_2010, 
+                  N_female_1991_2000, 
+                  N_male_1991_2000, 
+                  N_missing_1991_2000, 
+                  N_female_1981_1990, 
+                  N_male_1981_1990, 
+                  N_missing_1981_1990)  -> BPdata3
+
+## replace all NA with 0 (optional):
+BPdata3[is.na(BPdata3)] <- 0
+
+## reshape into long dataframe format:
+BPdata3 %>% gather(key = var_name, value = value, 2:ncol(BPdata3)) -> BPdata3long
+
+## create new variables coding gender and years:
+BPdata3long %>% 
+  mutate(Gender = case_when(startsWith(var_name, "N_female_") ~ "female",
+                           startsWith(var_name, "N_male_") ~ "male",
+                           startsWith(var_name, "N_missing") ~ "unassigned",
+                           TRUE ~ "NA")) %>% 
+  mutate(Years = case_when(endsWith(var_name, "2011_2020") ~ "2011-2020",
+                           endsWith(var_name, "2001_2010") ~ "2001-2010",
+                           endsWith(var_name, "1991_2000") ~ "1991-2000",
+                           endsWith(var_name, "1981_1990") ~ "1981-1990",
+                           TRUE ~ "NA")) -> BPdata3long
+
+## set the levels in order we want:
+BPdata3long$Gender <- factor(BPdata3long$Gender, levels = c("male", "female", "unassigned"))
+#BPdata3long$Years <- factor(BPdata3long$Years, levels = c("2011-2020", "2001-2010", "1991-2000", "1981-1990"))
+BPdata3long$Award <- factor(BPdata3long$Award, levels = c("any journal / ESA George Mercer Award",
+                                                          "Evolution / SSE Outstanding Dissertation Award",
+                                                          "FunctEcol / BES Haldane ECR Award",
+                                                          "AmNat / ASN Student Paper Award",
+                                                          "JExpBiol / CoB Outstanding Paper Prize",
+                                                          "MethodsEcolEvol / BES Robert May Prize",
+                                                          "JEvolutionBiol / ESEB Stearns Graduate Student Prize",
+                                                          "GenomeBiolEvol / SMBE Best Graduate Student Paper",
+                                                          "MolBiolEvol / SMBE Best Graduate Student Paper",
+                                                          "EcolLett / CNRS ECR Award")) #from longest to shortest years data
+
+# ## plot for a single award - not stacked, with count values:
+# BPdata3long %>% 
+#   filter(Award == "ASN Early Career Investigator Award") %>% 
+#   ggplot(aes(x = Years, y = value)) +
+#   geom_bar(aes(fill = Gender), stat = "identity", position = position_dodge(0.9)) +
+#   scale_fill_manual(values = c("#56B4E9", "#E69F00", "#999999")) +
+#   theme_classic()
+
+## plot for a all awards, as facets - not stacked, with count values:
+BPdata3long %>% 
+  ggplot(aes(x = Years, y = value)) +
+  geom_bar(aes(fill = Gender), stat = "identity", position = position_dodge(0.9)) +
+  facet_wrap(~Award, scales = "fixed", nrow = 5, ncol = 2) +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#999999")) +
+  theme_classic() +
+  theme(legend.position="top", legend.box = "horizontal", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_y_continuous(breaks = c(0, 2, 4, 6, 8), minor_breaks = NULL) +
+  labs(fill = "Awardee name") +
+  ylab("Count") 
+
+ggsave(here("plots", "BP_awards_gender_years_counts.png"), width = 18, height = 20, units = "cm", dpi = "retina")
+
+
+## plot for a all awards, as facets- not stacked, with percent values
+BPdata3long %>% 
+  ggplot(aes(x = Years, y = value)) +
+  geom_bar(aes(fill = Gender), stat = "identity", position = "fill") +
+  facet_wrap(~Award, scales = "fixed", nrow = 5, ncol = 2) +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#999999")) +
+  geom_abline(slope = 0, intercept = 0.5, col = "red",lty = 2) + 
+  theme_classic() +
+  theme(legend.position = "top", legend.box = "horizontal", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(fill = "Awardee name") +
+  ylab("Percent") + 
+  scale_y_continuous(labels = scales::percent)
+
+
+ggsave(here("plots", "BP_awards_gender_years_v1.png"), width = 18, height = 20, units = "cm", dpi = "retina")
+
+
+## plot for a all awards, as facets- not stacked, with percent values and count values
+BPdata3long %>% 
+  mutate(Award_year = paste(Award, Years)) %>%
+  group_by(Award_year) %>% 
+  mutate(Perc = value/sum(value)) %>% 
+  filter(value != 0) %>% 
+  ggplot(aes(Years, Perc, fill = Gender), stat = "identity", position = "fill") + 
+  facet_wrap(~Award, scales = "fixed", nrow = 5, ncol = 2) +
+  scale_fill_manual(values = c("#56B4E9", "#E69F00", "#999999")) + 
+  geom_col(position = position_stack()) + 
+  geom_text(aes(label = value), position = position_stack(vjust = 0.5), size = 4) +
+  geom_abline(slope = 0, intercept = 0.5, col = "red", lty = 2) + 
+  theme_classic() +
+  theme(legend.position = "top", legend.box = "horizontal", axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(fill = "Awardee name") +
+  ylab("Percent") + 
+  scale_y_continuous(labels = scales::percent)
+
+ggsave(here("plots", "BP_awards_gender_years_v2.png"), width = 18, height = 20, units = "cm", dpi = "retina")
+
+```

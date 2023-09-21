@@ -1,0 +1,24 @@
+Meta-data for indiv_winners tab with additional extracted data on individual award winners:,,
+column name,description,data type [options]
+award_SA,Name of the Scimago Subject Area (SA) you are doing extractions for - as in the Subject_area column in the GoogleSheet with journal and awards lists. Should be exactly as used in the original list of Subject Areas.,categorical [one of 27 Subject Areas]
+record_count,Subsequent numbers for counting extracted winners within each award.,integer
+award_name,Name of the award - as in the Award_name column in the main GoogleSheet with awards main data extraction.,free text
+award_link,Weblink to the main Internet page with award description / information.,weblink
+individual,Whether an award is individual or article-focused. Individual awards are defined as awards that are usually not shared equally between all article authors. For example the award names as a winner only the ECR authors or only the first author (unless there are more than one ECR/first authors who contributed equally).,categorical [yes; no]
+award_year,"Year when award was won/announced for a give individual winner, as reported on the award page or other documents with winner information.",integer
+awardee_name,"Name of a person who won the award, as reported on the award page or other documents with winner information.",free text
+awardee_gender,"Gender assigned to an individual past awardee names using information from pronouns, images, names) available on award websites, personal or institutional websites, or from first names.",categorical [F = female; M = male; ? - unassigned]
+gender_source,"Main source of information for assigning gender. Order of preference: pronouns, photo, name.",categorical [pronouns; photo; name]
+affiliation_institution,"Affiliation institution (usually university) assigned to a winner when the award was received using information available on award websites, personal or institutional websites, or information in the awarded paper.",free text
+affiliation_country,"Affiliation country assigned to a past winner for the year when the award was received using information available on award websites, personal or institutional websites, or information in the awarded paper.",free text
+affiliation_info_source,"Main source of the winner's affiliation information (institution, country) for the year when the award was received or announced.",categorical [award page; award announcement; article; other]
+awardee_comment1,"Any comments for awardee, e.g. award sub-category, or link to additional info from Internet searches.",free text
+shared,Whether the award is shared with other authors of the same article.,categorical [yes; no]
+awardee_profile_shown,Whether a bio/profile of the winner is shown on the award page/announcement (with more extended information than affiliation information only).,categorical [yes; no]
+awardee_photo_shown,Whether a photo of the winner is shown on the award page/announcement.,categorical [yes; no]
+awardee_comment2,"Any other comments on the awardee or awarded paper, e.g. award sub-category, or link to additional info from Internet searches.",free text
+awarded_paper_ref,Bibliographic reference of the winning paper.,free text [reference in any long format]
+awarded_paper_doi,"DOI of the winning paper. DOI code in a format starting with ""10."".",DOI
+checked,Whether a given row of extracted data has been cross-checked.,categorical [yes; no]
+checker_name,Name of the person who cross-checked a given row of extracted data.,free text
+checker_comment,Anny comments regarding extracted data in a given row.,free text
