@@ -162,7 +162,7 @@ theme_set(theme_classic(base_size = 14) +
 
 ## Loading data.   
 
-Load SCImago Subject Area -level data set and associated meta-data table:   
+Load SCImago Subject Area -level data set and an associated meta-data table:   
 
 ```{r}
 # accessing all the sheets 
@@ -184,7 +184,7 @@ SAmeta <- read_excel(here("data", "scimagojr 2021  Subject Areas_screening.xlsx"
                      sheet = 1, skip = 1) #load SCImago SA meta-data
 ```
 
-Load award-level data set and associated meta-data table:   
+Load award-level data set and an associated meta-data table:   
 
 ```{r}
 #BP load and prepare award-level meta-data
@@ -233,7 +233,7 @@ BPdata$Descr_available <- fct_collapse(BPdata$Open_science,
 )
 ```
 
-Load winners-level data set and associated meta-data table:   
+Load winners-level data set and an associated meta-data table:   
 
 ```{r}
 #load individual winners data
@@ -245,7 +245,7 @@ BPindiv_meta <- read_csv(here("data", "BP_awards_lists_SHAREDCOPY - indiv_winner
                          skip = 1) #load individual winners data
 ```
 
-Load country-level productivity SCImago data set and create associated meta-data table:    
+Load country-level productivity SCImago data set and an associated meta-data table:    
 
 ```{r}
 #load SCImago 2021 country productivity (documents) data downloaded from https://www.scimagojr.com/countryrank.php?year=2021&min=0&min_type=it
@@ -357,21 +357,36 @@ SAdata %>%
 #sum(duplicated(SAdata100$Title))/length(SAdata100$Title) #24% duplicated journal Titles (out of 2700)
 ```
 
-Across the top 100 journals in each Subject Area ranking list there are 644 duplicated journal titles (23.9%). This indicates that one journal can often be classified into one or more related Subject Areas (e.g. “Trends in Cognitive Sciences” is included both in Neuroscience and Psychology Subject Areas). This overlap implies that the related awards will also often be relevant to more than one Subject Area. Thus, after the screening step, we checked for duplicate inclusions and data extractions and assigner each award to only one Subject Area for the analyses to avoid double-counting.    
+Across the top 100 journals in each Subject Area ranking list there are `r sum(duplicated(SAdata100$Title))` duplicated journal titles (`r round(sum(duplicated(SAdata100$Title)) / length(SAdata100$Title) * 100, 0)`%). This indicates that one journal can often be classified into one or more related Subject Areas (e.g. “Trends in Cognitive Sciences” is included both in Neuroscience and Psychology Subject Areas). This overlap implies that the related awards will also often be relevant to more than one Subject Area. Thus, after the screening step, we checked for duplicate inclusions and data extractions and assigner each award to only one Subject Area for the analyses to avoid double-counting.    
 
 ## Award-level dataset characteristics.     
 
-Overall summary: Total number of unique names of awards: 222.   
-Total number of unique names of awards: 27.   
-Total number of unique names of awarding journals: 177.   
-Total number of unique names of awarding societies: 127.   
-Total number of unique names of awarding other bodies: 22.   
-Total number of awards without award description: 11 (5%).   
-Total number of unique names of individual winners records: 1079.   
+Overall summary:   
 
-Some sanity checks:   
+Total number of unique names of awards: `r length(unique(BPdata$Award_name))`.     
+Total number of unique names of awards: `r length(unique(BPdata$Scimago_Subject_Area))`.  
+
+Total number of awards without award description: `r table(BPdata$Descr_available, useNA = "always")[2]` (`r round(table(BPdata$Descr_available, useNA = "always")[2] / length(BPdata$Descr_available) * 100, 0)`%).    
+
+Total number of individual winners records extracted: `r length(BPindiv$awardee_name)`.   
+Total number of unique names of individual winners records extracted: `r length(unique(BPindiv$awardee_name))` (`r round(length(unique(BPindiv$awardee_name)) / length(BPindiv$awardee_name) * 100,0)`%).       
+
+
+Awarding bodies:    
+
+Total number of awards associated with a journal: `r sum(BPdata$Awarding_journal != "NA")` (`r round(sum(BPdata$Awarding_journal != "NA") / sum(BPdata$Descr_available == "available") * 100, 0)`%).     
+Total number of awards associated with a society: `r sum(BPdata$Awarding_society != "NA")` (`r round(sum(BPdata$Awarding_society != "NA") / sum(BPdata$Descr_available == "available") * 100, 0)`%).     
+Total number of awards associated with other awarding body: `r sum(BPdata$Awarding_other != "NA")` (`r round(sum(BPdata$Awarding_other != "NA") / sum(BPdata$Descr_available == "available") * 100, 0)`%).   
+Note: one oward could be associated with more than one category from above.   
+
+
+Overlap of awarding journals across SA: `r sum(duplicated(BPdata$Awarding_journal[BPdata$Awarding_journal != "NA"]))` (`r round(sum(duplicated(BPdata$Awarding_journal[BPdata$Awarding_journal != "NA"])) / sum(BPdata$Descr_available == "available") * 100, 0)`%).   
+Overlap of of awarding societies across SA: `r sum(duplicated(BPdata$Awarding_society[BPdata$Awarding_society != "NA"]))` (`r round(sum(duplicated(BPdata$Awarding_society[BPdata$Awarding_society != "NA"])) / sum(BPdata$Descr_available == "available") * 100, 0)`%).      
+Overlap of awarding other bodies across SA: `r sum(duplicated(BPdata$Awarding_other[BPdata$Awarding_other != "NA"]))` (`r round(sum(duplicated(BPdata$Awarding_other[BPdata$Awarding_other != "NA"])) / sum(BPdata$Descr_available == "available") * 100, 0)`%).      
 
 ```{r, eval = FALSE}
+##### Initial data sanity checks (Note: code chunk not evaluated on knitting)
+  
 ##Check award names - same award could have been extracted in different SA, or different awards have same names 
 # table(duplicated(BPdata$Award_name)) #0 duplicated, 222 unique
 
@@ -382,32 +397,6 @@ Some sanity checks:
 #     count(Scimago_Subject_Area) #%>%
 #     #arrange(desc(n)) 
  
-# count_awards <- BPdata %>% 
-#  # group_by(Scimago_Subject_Area) %>%
-#     count(Descr_available) %>%
-#     arrange(desc(n)) #description not available for 12 awards (5%)
-
-# BPdata %>%
-#   group_by(Awarding_journal) %>%
-#   filter(n() > 1) %>%
-#   select(Awarding_journal) %>%
-#   filter(!is.na(Awarding_journal)) %>%
-#   count() #no journals with more than one award across different
-
-# BPdata %>%
-#   group_by(Awarding_society) %>%
-#   filter(n() > 1) %>%
-#   select(Awarding_society) %>%
-#   filter(!is.na(Awarding_society)) %>%
-#   count() #some societies with more than one award (max.4)
-
-# BPdata %>%
-#   group_by(Awarding_other) %>%
-#   filter(n() > 0) %>%
-#   select(Awarding_other) %>%
-#   filter(!is.na(Awarding_other)) %>%
-#   count() #%>% View()#list of other awarding bodies mentioned with counts
-
 # #count number of unique awards per year:
 # BPindiv %>% 
 #   #filter(!is.na(affiliation_country)) %>% 
@@ -467,7 +456,7 @@ length(BPdata$Award_name[BPdata$Award_individual == "yes" &
 
 table(BPdata$Inclusivity_statement, useNA = "always") #only 2 with "yes"
 
-BPdata$Award_name[BPdata$Inclusivity_statement == "yes"] #see rows with "yes"
+#BPdata$Award_name[BPdata$Inclusivity_statement == "yes"] #see rows with "yes"
 
 table(BPdata$Assessors_transparency, useNA = "always") #114 "yes"
 #View(BPdata[BPdata$Assessors_transparency == "yes", ]) #see rows with "yes"
@@ -600,16 +589,15 @@ Word counts per award description:
 BPdata$Award_description_wordcount <- str_count(BPdata$Award_description, "\\w+")
 #hist(str_count(BPdata$Award_description, "\\w+"), breaks = 20)
 
-BPdata[is.na(BPdata$Scimago_Subject_Area), ] #no NA, but no description was coded as NA, so if 1 then change to 0 (no description)
+dim(BPdata[is.na(BPdata$Scimago_Subject_Area), ])[1] #no NA, but no description was coded as NA, so if 1 then change to 0 (no description)
 BPdata$Award_description_wordcount[BPdata$Award_description_wordcount < 2] <- 0 #if 1 then change to 0 (no description)
 length(BPdata$Award_description_wordcount[BPdata$Award_description_wordcount == 0]) #11 awards without description (0 words)
-## [1] 11
-#dim(BPdata[BPdata$Award_description_wordcount < 100, ])[1] #90 descriptions have less than 100 words! (includes 11 with no description)
+#dim(BPdata[BPdata$Award_description_wordcount < 100, ])[1] #descriptions have less than 100 words! (includes 11 with no description)
 ```
 
-Number of awards with at least 100-word description: 79 (40 % of wards with descriptions).
+Number of awards with less than 100-word description: `r dim(BPdata[BPdata$Award_description_wordcount < 100, ])[1]` (`r round(dim(BPdata[BPdata$Award_description_wordcount < 100, ])[1] / dim(BPdata[BPdata$Award_description_wordcount != 0, ])[1] * 100, 1)`% of `r dim(BPdata[BPdata$Award_description_wordcount != 0, ])[1]` awards with descriptions).   
 
-Median length of award description: 123.
+Median length of award description: `r median(BPdata$Award_description_wordcount[BPdata$Award_description_wordcount != 0])`.   
 
 #### Figure 1C - Plot of award description lengths - overall:      
 
@@ -713,15 +701,16 @@ figure1 <- (figure1A + figure1B) / figure1C / figure1D +
               heights = c(3, 1, 1)) +
   plot_annotation(tag_levels = "A")
 
-#ggsave(plot = figure1, here("plots", "Fig1ABCD_screening_descriptions_v1.png"), width = 18.4, height = 18, units = "cm", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure1, here("plots", "Fig1ABCD_screening_descriptions_v1.pdf"), width = 18.4, height = 18, units = "cm", scale = 1.2)
+#ggsave(plot = figure1, here("plots", "Fig1ABCD_screening_descriptions_v1.png"), width = 18.6, height = 18, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure1, here("plots", "Fig1ABCD_screening_descriptions_v1.pdf"), width = 18.6, height = 18, units = "cm", scale = 1.2)
 ```
 
 Summary by award age:    
-- Award year of the earliest listed winner used as a proxy: 1923.  
-- Number of awards with the earliest listed winner in or before 2001: 54 (24.3 %).  
-- Number of awards with the earliest listed winner within 2001-2023: 45 (20.3 %).  
-- Number of awards with the earliest listed winner within 2011-2023: 107 (48.2 %).  
+- Award year of the earliest listed winner used as a proxy: `r `min(BPdata$Awardee_list_earliest_year, na.rm = TRUE)`.    
+- Number of awards with the earliest listed winner known: `r  dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year), ])[1]`.       
+- Number of awards with the earliest listed winner in or before 2000: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year <= 2000, ])[1]`.  
+- Number of awards with the earliest listed winner within 2001-2010: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year >= 2001 & BPdata$Awardee_list_earliest_year <= 2010, ])[1]`.  
+- Number of awards with the earliest listed winner within 2011-2023: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year >= 2011 & BPdata$Awardee_list_earliest_year <= 2023, ])[1]`.  
 
 
 #### Figure 2A - Awarding bodies:     
@@ -826,19 +815,19 @@ figure2 <- figure2A / figure2B +
 
 
 Summary of included awards by awarding or funding body type:  
-
-- Total number of awards associated with a journal or a few related journals: 176 (79.3 %).  
-- Total number of awards associated with a learned society: 144 (64.9 %).  
-- Total number of awards associated with other organisation (e.g. a publisher, university, charity): 39 (17.6 %).   
-- Most commonly mentioned other organisations:  15 mention “Elsevier”, 6 mention “Wiley”.   
+#names(BPdata)
+- Total number of awards associated with a journal or a few related journals: `r sum(BPdata2$Awarding_journal)` (`r round(sum(BPdata2$Awarding_journal) / length(BPdata2$Awarding_journal) * 100, 0)`%).    
+- Total number of awards associated with a learned society: `r sum(BPdata2$Awarding_society)` (`r round(sum(BPdata2$Awarding_society) / length(BPdata2$Awarding_society) * 100, 0)`%).    
+- Total number of awards associated with other organisation (e.g. a publisher, university, charity): `r sum(BPdata2$Awarding_other)` (`r round(sum(BPdata2$Awarding_other) / length(BPdata2$Awarding_other) * 100, 0)`%).   
+- Most commonly mentioned other organisations:  `r length(grep("Elsevier", BPdata$Awarding_other))` mention “Elsevier”, `r length(grep("Wiley", BPdata$Awarding_other))` mention “Wiley”.   
 
 Summary by target career stage:    
 
-- Total number of awards for ‘any career stage’ authors: 179 (80.6%).  
-- Total number of awards for ‘early career’ authors: 31 (14%).  
-- Total number of awards for ‘student’ authors: 27 (12.2%).  
-- Total number of awards for ‘early career’ or ‘student’ authors: 20 (9%).  
-- Total number of awards for ’mid-career’authors: 5 (2.3%).  
+- Total number of awards for ‘any career stage’ authors: `r length(grep("any career stage", BPdata$Career_stage))` (`r round(length(grep("any career stage", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
+- Total number of awards for ‘early career’ authors: `r length(grep("early career", BPdata$Career_stage))` (`r round(length(grep("aearly career", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
+- Total number of awards for ‘student’ authors: `r length(grep("student", BPdata$Career_stage))` (`r round(length(grep("student", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
+- Total number of awards for ‘student’ and/or ‘early career’ authors: `r length(grep("student, early-career", BPdata$Career_stage))` (`r round(length(grep("student, early-career", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
+- Total number of awards for ’mid-career’authors: `r length(grep("mid-career", BPdata$Career_stage))` (`r round(length(grep("mid-career", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
 
 
 #### Figure 3 - summary of extracted award characteristics:       
@@ -1001,34 +990,38 @@ figure3 <- figure3A / figure3B +
 #ggsave(plot = figure3, here("plots", "Fig3AB_award_descriptions_v1.pdf"), width = 18, height = 10, units = "cm", scale = 1.2)
 ```
 
+
 Summary by focus on individuals (“individual award”) or whole article (“team award”):   
 
-- Total number of awards for individual authors: 66 (29.7%).  
-- Total number of awards for individual authors with any career stage being eligible: 28 (42.4%).  
-- Total number of awards for individual authors with inflexible time limits for eligibility: 21 (31.8%).   
-- Total number of awards for individual authors with flexible time limits for eligibility: 5 (7.6%).  
+- Total number of awards for individual authors: `r length(grep("yes", BPdata$Award_individual))` (`r round(length(grep("yes", BPdata$Award_individual)) / length(BPdata$Award_individual) * 100, 0)`%).    
+- Total number of awards for individual authors with any career stage being eligible: `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Career_stage == "any career stage"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Career_stage == "any career stage"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%).  
+- Total number of awards for individual authors with inflexible time limits for eligibility: `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%).   
+- Total number of awards for individual authors with flexible time limits for eligibility:  `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%). Note: remaining are "not applicable", usually because tehre are no time-related limits for eligibility, e.g. due to any career stage being eligible.         
 
 Summary by basic award characteristics:   
 
-- Total number of awards with an inclusivity statement: 2 (0.9%).  
-- Total number of awards with assessor transparency: 114 ( 51.4%).   
-- Total number of awards with assessment integrity mentioned: 19 ( 8.6%).  
-- Total number of awards with process transparency: 2 (0.9%).   
-- Total number of awards with self-nomination allowed: 28 (12.6%).  
-- Total number of awards with required nomination letter: 38 (17.1%).  
-- Total number of awards with feedback available: 0 (0%).  
-- Total number of awards with contact details available: 38 (17.1%).  
+- Total number of awards with an inclusivity statement: `r sum(str_count(BPdata$Inclusivity_statement, "yes"))` (`r round(sum(str_count(BPdata$Inclusivity_statement, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
+- Total number of awards with assessor transparency: `r sum(str_count(BPdata$Assessors_transparency, "yes"))` (`r round(sum(str_count(BPdata$Assessors_transparency, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
+- Total number of awards with assessment integrity mentioned: `r sum(str_count(BPdata$Award_integrity_mentioned, "yes"), na.rm = TRUE)` (`r round(sum(str_count(BPdata$Award_integrity_mentioned, "yes"), na.rm = TRUE) / table(BPdata$Descr_available)[1] * 100, 0)`%).  
+- Total number of awards with process transparency: `r sum(str_count(BPdata$Process_transparency, "yes"))` (`r round(sum(str_count(BPdata$Process_transparency, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).  
+- Total number of awards with self-nomination allowed: `r sum(str_count(BPdata$Self_nomination, "yes"))` (`r round(sum(str_count(BPdata$Self_nomination, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).    
+- Total number of awards with required nomination letter:`r sum(str_count(BPdata$Letter_required, "yes"))` (`r round(sum(str_count(BPdata$Letter_required, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).     
+- Total number of awards with feedback available: `r sum(str_count(BPdata$Feedback_availability, "yes"))` (`r round(sum(str_count(BPdata$Feedback_availability, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
+- Total number of awards with contact details available: `r sum(str_count(BPdata$Award_contact_provided, "yes"))` (`r round(sum(str_count(BPdata$Award_contact_provided, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
 
 Summary by award criteria characteristics:   
 
-- Total number of awards with non-vague criteria: 40 (18%).   
-- Total number of awards mentioning impact metrics: 21 (9.5%).  
-- Total number of awards based only on impact metrics: 8 (3.6%).  
-- Total number of awards which value Open Science: 1 (0.45%).  
-- Total number of awards with cash award: 112 (50.5%).  
+- Total number of awards with non-vague criteria: `r sum(str_count(BPdata$Criteria_transparency, "yes"))` (`r round(sum(str_count(BPdata$Criteria_transparency, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
+- Total number of awards mentioning impact metrics: `r sum(str_count(BPdata$Award_impact_metrics_mentioned, "yes"))` (`r round(sum(str_count(BPdata$Award_impact_metrics_mentioned, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).   
+- Total number of awards based only on impact metrics: `r sum(str_count(BPdata$Award_impact_metrics_only, "yes"))` (`r round(sum(str_count(BPdata$Award_impact_metrics_only, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).
+- Total number of awards which value Open Science: `r sum(str_count(BPdata$Open_science, "yes"))` (`r round(sum(str_count(BPdata$Open_science, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).
+
+- Total number of awards with cash award: `r sum(str_count(BPdata$Award_cash, "yes"))` (`r round(sum(str_count(BPdata$Award_cash, "yes")) / table(BPdata$Descr_available)[1] * 100, 0)`%).
+
 
 
 ## Award characteristics by Subject Area.   
+
 
 Plot Award_individual by Subject Area:   
 
@@ -1056,9 +1049,9 @@ BPdata %>%
           axis.title.x = element_text(size = 10))
 ```
 
-
 #### Figure S5.   
 *Individual-focused awards - by Subject Area*.  
+
 
 Plot Flexible_eligibility by SA:   
 
@@ -1512,17 +1505,13 @@ figure4 <- figure4A / figure4B +
 #length(unique(BPindiv$award_name)) #61 - number from records in past winner's data (matching)
 ```
 
-Total number of extracted awards: 61.  
+Total number of extracted awards: `r length(unique(BPindiv$award_name))`.      
+Number of Subject Areas with 0 extracted award winners: `r 27 - length(unique(BPdata$Scimago_Subject_Area[BPdata$N_winners_extracted != 0]))`.   
+
 
 Plot numbers of awards extracted per SA:   
 
 ```{r}
-#from BPdata:
-BPdata %>% 
-  group_by(Scimago_Subject_Area) %>% 
-  filter(N_winners_extracted != 0) %>% 
-  count(Scimago_Subject_Area) -> awards_perSA
-
 # #from BPindiv:
 # BPindiv %>%  
 #   group_by(award_SA) %>%
@@ -1533,12 +1522,36 @@ BPdata %>%
 #   group_by(award_SA) %>%
 #   summarise(count = n_distinct(award_name)) %>% summarise(mean(count)) #3
 
-#plot counts where >0 awards per SA
-p_count.awards.SA <- BPindiv %>% 
-  group_by(award_SA) %>%
-  summarise(count = n_distinct(award_name)) %>% 
-  ggplot(aes(x = reorder(award_SA, desc(award_SA)), 
-             y = count)) +
+#from BPdata - with winners data:
+BPdata %>% 
+  group_by(Scimago_Subject_Area) %>% 
+  filter(N_winners_extracted != 0) %>% 
+  count(Scimago_Subject_Area) -> awards_perSA
+
+#No data for: 
+setdiff(unique(BPdata$Scimago_Subject_Area), unique(BPdata$Scimago_Subject_Area[BPdata$N_winners_extracted != 0])) -> awards_perSA_none
+
+#combine two tibbles
+awards_perSA <- bind_rows(awards_perSA ,tibble(Scimago_Subject_Area = awards_perSA_none, n = rep(0, length(awards_perSA_none))))
+
+
+# #plot counts where >0 awards per SA
+# p_count.awards.SA <- BPindiv %>% 
+#   group_by(award_SA) %>%
+#   summarise(count = n_distinct(award_name)) %>% 
+#   ggplot(aes(x = reorder(award_SA, desc(award_SA)), 
+#              y = count)) +
+#   geom_bar(stat = "identity", 
+#            position = position_dodge(0.9)) +
+#   coord_flip() +
+#   theme_bw() +
+#   labs(x = "Scimago Subject Area", 
+#        y = "Award count")  
+
+#plot counts per SA for all SA
+p_count.awards.SA <- awards_perSA %>% 
+  ggplot(aes(x = reorder(Scimago_Subject_Area, desc(Scimago_Subject_Area)), 
+             y = n)) +
   geom_bar(stat = "identity", 
            position = position_dodge(0.9)) +
   coord_flip() +
@@ -1567,31 +1580,43 @@ BPdata %>%
   group_by(Scimago_Subject_Area) %>% 
   select(N_winners_extracted) %>% 
   filter(!is.na(N_winners_extracted)) %>% 
-  summarise(sum_winners = sum(N_winners_extracted), .groups = 'drop') -> winners_perSA1
+  summarise(sum_winners = sum(N_winners_extracted), .groups = 'drop') -> winners_perSA1 #use for plotting all SA
 
-##Adding missing grouping variables: Scimago_Subject_Area
 #dim(winners_perSA1[winners_perSA1$sum_winners != 0, ])[1] #number of SA with any extracted names
 #winners_perSA1[winners_perSA1$sum_winners != 0, ] #table of SA with any extracted names
 
-#from BPindiv:
+##Using BPindiv
+##Adding missing grouping variables: Scimago_Subject_Area
 #table(BPindiv$award_SA)
 #dim(table(BPindiv$award_SA, useNA = "always")) #19 SA with any extracted names
-BPindiv %>%
-  group_by(award_SA) %>% count() -> winners_perSA1_extracted #does not show SA with 0 extracted
-
+# BPindiv %>%
+#   group_by(award_SA) %>% count() 
+#   -> winners_perSA1_extracted #does not show SA with 0 extracted
 #median(winners_perSA1_extracted$n) #42
 
-#plot counts where >0 winners per SA
-p_count.awardees.SA <- BPindiv %>% 
-  group_by(award_SA) %>% 
-  count() %>%
-  ggplot(aes(x = reorder(award_SA, desc(award_SA)), 
-             y = n)) +
+# #plot counts where >0 winners per SA
+# p_count.awardees.SA <- 
+#   BPindiv %>% 
+#   group_by(award_SA) %>% 
+#   count() %>%
+#   ggplot(aes(x = reorder(award_SA, desc(award_SA)), 
+#              y = n)) +
+#   geom_bar(stat = "identity", 
+#            position = position_dodge(0.9)) +
+#   coord_flip() +
+#   theme_bw() +
+#   #scale_x_discrete(labels = NULL) + labs(x = "")  + #used to remove vertical labels, also breaks = NULL
+#   labs(x = "Scimago Subject Area", 
+#        y = "Awardee count")  
+
+#plot counts per SA for all SA
+p_count.awardees.SA <- winners_perSA1 %>% 
+  ggplot(aes(x = reorder(Scimago_Subject_Area, desc(Scimago_Subject_Area)), 
+             y = sum_winners)) +
   geom_bar(stat = "identity", 
            position = position_dodge(0.9)) +
   coord_flip() +
   theme_bw() +
-  #scale_x_discrete(labels = NULL) + labs(x = "")  + #used to remove vertical labels, also breaks = NULL
   labs(x = "Scimago Subject Area", 
        y = "Awardee count")  
 
@@ -1617,7 +1642,7 @@ BPindiv %>%
 ```
 
 #### Figure S20.  
-*Number of extracted awards with individual winners names per year - counts for all Subject Areas*.   
+*Number of extracted awards with individual winners names per year across all Subject Areas*.   
 
 Plot numbers of individual winner records per year:   
 
@@ -1637,7 +1662,7 @@ BPindiv %>%
 ```
 
 #### Figure S21.  
-*Number of extracted individual winners per year - counts for all Subject Areas*.    
+*Number of extracted individual winners per year across all Subject Areas*.    
 
 Number of individual winner records per decade:   
 
@@ -1658,9 +1683,9 @@ BPindiv %>%  mutate(Decade = case_when(
 ```
 
 ## Counts of extracted past awardees by decade:     
-- 2001-2010: 165.   
-- 2011-2020: 720.  
-- 2021-2022: 194.   
+- 2001-2010: `r table(BPindiv$Decade, useNA = "always")[1]`.   
+- 2011-2020: `r table(BPindiv$Decade, useNA = "always")[2]`.   
+- 2021-2022: `r table(BPindiv$Decade, useNA = "always")[3]`.   
 
 ```{r}
 #table(BPindiv$shared, useNA = "always") #156 shared (14% of names), usually shared by 2 authors)
@@ -1668,25 +1693,25 @@ BPindiv %>%  mutate(Decade = case_when(
 #table(BPindiv$award_SA, BPindiv$shared) # sharing most frequent in Computer Science
 ```
 
-Number of individuals sharing awards: 156 (NA%).   
+Number of individuals sharing awards: `r table(BPindiv$shared, useNA = "always")[2]` (`r round(table(BPindiv$shared, useNA = "always")[2] / length(BPindiv$shared) * 100, 0)`%).   
 
-NOTE: during the first round of data extraction, we located around 3/4 of winning articles - these were articles where title or DOI was available on award page or announcement. However, article information was sometimes only publicly listed for recently awarded articles. Our additional Internet searches increased the number of identified articles to 796.   
+NOTE: during the first round of data extraction, we located around 3/4 of the winning articles - these were articles where title or DOI were available on the award page or announcement. Often article information was publicly listed only for recently awarded articles and absent for the older ones. Our additional Internet searches increased the number of identified articles.   
 
-Number of awards with article information (reference): 880 (81.6%).   
-Number of awards with article information (DOI): 879 (81.5%).   
-Number of awards with article information (reference or DOI): 879 (81.5%).   
+Number of awards with article information (only reference): `r table(is.na(BPindiv$awarded_paper_ref))[1]` (`r round(table(is.na(BPindiv$awarded_paper_ref))[1] / length(BPindiv$awarded_paper_ref) * 100, 0)`).    
+Number of awards with article information (only DOI): `r table(is.na(BPindiv$awarded_paper_doi))[1]` (`r round(table(is.na(BPindiv$awarded_paper_doi))[1] / length(BPindiv$awarded_paper_doi) * 100, 0)`).     
+Number of awards with article information (reference or DOI): `r table(!is.na(BPindiv$awarded_paper_ref) & !is.na(BPindiv$awarded_paper_doi))[2]` (`r round(table(!is.na(BPindiv$awarded_paper_ref) & !is.na(BPindiv$awarded_paper_doi))[2] / length(BPindiv$awarded_paper_ref) * 100, 0)`%).   
 
 
 ## Awardee gender.   
 
 Source of information on gender:   
-- Pronouns: 187 (17.3%).
-- Photo: 265 (24.6%).  
-- Name only: 627 ( %).  
+- Pronouns: `r table(BPindiv$gender_source == "pronouns")[2]` (`r round(table(BPindiv$gender_source == "pronouns")[2] / length(BPindiv$gender_source) * 100, 0)`%).   
+- Photo: `r table(BPindiv$gender_source == "photo")[2]` (`r round(table(BPindiv$gender_source == "photo")[2] / length(BPindiv$gender_source) * 100, 0)`%).   
+- Name only:`r table(BPindiv$gender_source == "name")[2]` (`r round(table(BPindiv$gender_source == "name")[2] / length(BPindiv$gender_source) * 100, 0)`%).   
 
-Total number of past awardees without gender assigned: 0.   
-Total number of past awardees assigned as a woman: 424 (39.3%).   
-Total number of past awardees assigned as a man: 655 (60.7%).   
+Total number of past awardees without gender assigned: `r sum(is.na(BPindiv$awardee_gender))`.    
+Total number of past awardees assigned as a woman: `r table(BPindiv$awardee_gender == "F")[2]` (`r round(table(BPindiv$awardee_gender == "F")[2] / length(BPindiv$awardee_gender) * 100, 0)`%).    
+Total number of past awardees assigned as a man: `r table(BPindiv$awardee_gender == "M")[2]` (`r round(table(BPindiv$awardee_gender == "M")[2] / length(BPindiv$awardee_gender) * 100, 0)`%).    
 
 Plot gender counts overall:  
 
@@ -1919,13 +1944,18 @@ BPindiv %>%
 
 ## Affiliation country.    
 
-Number of past awardees without affiliation country info: 54 (5%).   
+Number of past awardees without affiliation country info: `r table(is.na(BPindiv$affiliation_country))[2]` (`r round(table(is.na(BPindiv$affiliation_country))[2] / length(BPindiv$affiliation_country) * 100, 0)`%).       
+
+table(BPindiv$affiliation_info_source)
+
+`r table(BPindiv$affiliation_country, useNA = "always")[2]` (`r round(table(BPindiv$affiliation_country, useNA = "always")[2] / length(BPindiv$affiliation_country) * 100, 0)`%).   
+
 
 Source of affiliation information:   
-- Award page: 355 (32.9%).   
-- Award announcement: 159 (14.7%).   
-- Winning article: 482 (44.7%).  
-- Other: 30 (2.8%).  
+- Award page: `r sum(BPindiv$affiliation_info_source == "award page", na.rm = TRUE)` (`r round(sum(BPindiv$affiliation_info_source == "award page", na.rm = TRUE) / length(BPindiv$affiliation_info_source) * 100, 0)`%).   
+- Award announcement: `r sum(BPindiv$affiliation_info_source == "award announcement", na.rm = TRUE)` (`r round(sum(BPindiv$affiliation_info_source == "award announcement", na.rm = TRUE) / length(BPindiv$affiliation_info_source) * 100, 0)`%).   
+- Winning article: `r sum(BPindiv$affiliation_info_source == "article", na.rm = TRUE)` (`r round(sum(BPindiv$affiliation_info_source == "article", na.rm = TRUE) / length(BPindiv$affiliation_info_source) * 100, 0)`%).   
+- Other: `r sum(BPindiv$affiliation_info_source == "other", na.rm = TRUE)` (`r round(sum(BPindiv$affiliation_info_source == "other", na.rm = TRUE) / length(BPindiv$affiliation_info_source) * 100, 0)`%).   
 
 ```{r}
 #count individuals with affiliations:  
@@ -2020,8 +2050,9 @@ BPindiv$Country10 <- recode(BPindiv$affiliation_country,
 
 Affiliation country composition summary:   
 
-- Out of 1079 extracted individual winners, 1025 (95%) had information on their affiliation country.   
-- Out of 1025 extracted individual winners with affiliation country information, 487 (47.5%) had USA as their affiliation country.   
+- Out of `r dim(BPindiv)[1]` extracted individual winners, `r affiliation_indiv_count` (`r round(affiliation_indiv_count / dim(BPindiv)[1] * 100, 0)`%) had information on their affiliation country.   
+- Affiliations represented `r affiliation_country_count` countries (only first affiliation was used).   
+- Out of `r affiliation_indiv_count`  extracted individual winners with affiliation country information, `r affiliation_country_USA` (`r round(affiliation_country_USA / affiliation_indiv_count * 100, 0)` 47.5%) had USA as their affiliation country.    
 
 Incorporate data on Global South nations (United Nations FCFSSC) among past awardees:   
 
@@ -2194,8 +2225,8 @@ BPindiv %>%
 ```
 
 Summary of awardees from the Global South:   
-- Out of 1079 extracted individual winners, 111 (10.8%) were affiliated to a country classified as the Global South.   
-- The number of countries classified as the Global South: 12 (27.9% of the all detected countries).  
+- Out of `r affiliation_indiv_count`extracted individual winners with affiiation, `r n_winners_GS_indiv` (`r round(n_winners_GS_indiv / affiliation_indiv_count * 100, 0)`%) were affiliated to a country classified as the Global South.   
+- The number of countries classified as the Global South: `r n_winners_GS_countries` (`r round(n_winners_GS_countries / affiliation_country_count * 100, 0)`% of the all detected countries).  
 
 Plot awardee counts by country affiliations overall for all countries:  
 
@@ -2229,7 +2260,7 @@ BPindiv %>%
 ```
 
 #### Figure S28.   
-*Countries of first affiliation of the past awardees*.   
+*All countries of affiliation of the past awardees*.   
 
 Plot awardee counts for only top 10 countries with most awardees:   
 
@@ -2258,6 +2289,11 @@ BPindiv %>%
 Plot country of affiliation counts by Subject Area:   
 
 ```{r}
+#define 11 colour blind-friendly colors from https://rdrr.io/cran/colorBlindness/src/R/palette.R:
+mycolors <- rev(c("#FFBF7F", "#FF7F00", "#000000", "#FFFF32", 
+                       "#B2FF8C", "#A5EDFF", "#19B2FF", 
+                       "#CCBFFF", "#654CFF", "#FF99BF", "#E51932"))
+
 #top 10 countries by SA
 BPindiv %>% 
   filter(!is.na(Country10)) %>% 
@@ -2268,7 +2304,7 @@ BPindiv %>%
   #geom_bar(stat = "identity")
   geom_bar(aes(fill = Country10), 
            stat = "identity") +
-  scale_fill_manual(values = wa_pal("ferries", 11, reverse = TRUE)) +
+  scale_fill_manual(values = mycolors) +
   theme_bw() + 
   theme(legend.position="top", 
         axis.text = element_text(size = 10), 
@@ -2295,7 +2331,7 @@ figure5C <- BPindiv %>%
              fill = Country10)) +
   geom_bar(aes(fill = Country10), 
            stat = "identity") + # use , position = "fill" for proportion plot
-  scale_fill_manual(values = wa_pal("ferries", 11, reverse = TRUE)) +
+  scale_fill_manual(values = mycolors) +
   theme_bw() +
   theme(legend.position="top", 
         legend.text = element_text(size = 8), 
@@ -2322,7 +2358,7 @@ figure5D <- BPindiv %>%
   geom_bar(aes(fill = Country10), 
            stat = "identity", 
            position = "fill") + # use , position = "fill" for proportion plot
-  scale_fill_manual(values = wa_pal("ferries", 11, reverse = TRUE)) +
+  scale_fill_manual(values = mycolors) +
   theme_bw() +
   theme(legend.position = "none", 
         axis.text = element_text(size = 10), 
@@ -2345,8 +2381,8 @@ BPindiv %>%
              fill = Country10)) +
   geom_bar(aes(fill = Country10), 
            stat = "identity") + 
-  scale_fill_manual(values = wa_pal("ferries", 11, reverse = TRUE)) +
-    facet_wrap(~Decade, scales = "fixed", nrow = 1, ncol = 3) +
+  scale_fill_manual(values = mycolors) +
+  facet_wrap(~Decade, scales = "fixed", nrow = 1, ncol = 3) +
   theme_bw() + 
   theme(legend.position="top", 
         axis.text = element_text(size = 10), 
@@ -2380,13 +2416,13 @@ COprod <- read_csv(here("data", "scimagojr country rank 2021.csv"), skip = 0, sh
 
 #top10 contries
 COprod$Country %in% unique(BPindiv$Country10) %>% sum() #check overlap - 8
-## [1] 8
+
 #setdiff(unique(BPindiv$Country10), COprod$Country) #missing: "United States" and "United Kingdom"
 COprod$Country <-  gsub("United States", "USA", COprod$Country)  #replace with matching name
 COprod$Country <-  gsub("United Kingdom", "UK", COprod$Country)  #replace with a matching name
 #all countries
-COprod$Country %in% unique(BPindiv$affiliation_country) %>% sum() #check overlap - 40 
-## [1] 39
+COprod$Country %in% unique(BPindiv$affiliation_country) %>% sum() #check overlap - 39 
+
 setdiff(unique(BPindiv$affiliation_country), COprod$Country)  #missing:  "Vietnam"  "UAE"     "Russia" 
 ## [1] "Vietnam" NA        "UAE"     "Russia"
 COprod$Country <-  gsub("Viet Nam", "Vietnam", COprod$Country)  #replace with matching name
@@ -2427,7 +2463,7 @@ COprod %>%
   geom_bar(stat = "identity", 
            position = "fill") +
   coord_flip() + 
-  scale_fill_manual(values = wa_pal("ferries", 11, reverse = TRUE)) +
+  scale_fill_manual(values = mycolors) +
   theme_bw() + 
   theme(legend.position="top", 
         axis.text = element_text(size = 10), 
@@ -2578,7 +2614,7 @@ BPindiv %>%
 
 ## Cash and perks for the winners.   
 
-Cash award mentioned in 112 (50.5%) award descriptions.   
+Cash award mentioned in `r sum(BPdata$Award_cash == "yes")` (`r round(sum(BPdata$Award_cash == "yes") / length(BPdata$Award_cash) * 100, 0)`%) award descriptions.   
 
 #### Figure 6A - mentions of cash awards:   
 
@@ -2837,7 +2873,7 @@ words.df %>%
 
 #plot overall
 figure7A <- BPindiv %>% 
-  mutate(awardee_profile_shown = factor(awardee_profile_shown, levels = (c("yes", 
+  mutate("Awardee profile shown:" = factor("Awardee profile shown:", levels = (c("yes", 
                                                                            "no")))) %>% #reorder value levels
   group_by(award_year) %>%
   count(awardee_profile_shown) %>%
@@ -2856,8 +2892,11 @@ figure7A <- BPindiv %>%
     pattern_colour  = 'white') +
   scale_fill_manual(values = c("#748A52", "#8A6172")) +
   theme_bw() + 
-  labs(x = "Year", 
-       y = "Winner count") + 
+  labs(fill = "Awardee profile shown:",
+       pattern = "Awardee profile shown:",
+       pattern_angle = "Awardee profile shown:",
+       x = "Year", 
+       y = "Awardee count") + 
   theme(legend.position = "top", 
         axis.title.x = element_text(size = 10))
 ```
@@ -2888,8 +2927,11 @@ figure7B <- BPindiv %>%
     pattern_colour  = 'white') +
   scale_fill_manual(values = c("#748A52", "#8A6172")) +
   theme_bw() + 
-  labs(x = "Year",
-       y = "Winner count") + 
+  labs(fill = "Awardee profile shown:",
+       pattern = "Awardee profile shown:",
+       pattern_angle = "Awardee profile shown:",
+       x = "Year", 
+       y = "Awardee count") + 
   theme(legend.position = "top", 
         axis.title.x = element_text(size = 10))
 ```
@@ -2901,13 +2943,13 @@ figure7B <- BPindiv %>%
 figure7 <- figure7A / figure7B +
   plot_layout(ncol = 2, nrow = 1) +
   plot_annotation(tag_levels = "A")
-ggsave(plot = figure7, here("plots", "Fig7AB_perks_v1.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure7, here("plots", "Fig7AB_perks_v1.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
 #ggsave(plot = figure7, here("plots", "Fig7AB_perks_v1.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
 ```
 
 
 
-## Analyses of awardees - using award years.     
+## Statistical analyses and visualisations of awardees data - using award years.     
 
 ```{r}
 #Scale the award_year variable to have the mean of 0 and SD of 1
