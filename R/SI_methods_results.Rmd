@@ -1,7 +1,7 @@
 ---
 title: "SI_methods_results"
 author: "ML"
-date: "21/09/2023"
+date: "27/10/2023"
 output:
   html_document: 
    toc: true
@@ -245,13 +245,13 @@ BPindiv_meta <- read_csv(here("data", "BP_awards_lists_SHAREDCOPY - indiv_winner
                          skip = 1) #load individual winners data
 ```
 
-Load country-level productivity SCImago data set and an associated meta-data table:    
+Load country-level productivity SCImago data set:    
 
 ```{r}
 #load SCImago 2021 country productivity (documents) data downloaded from https://www.scimagojr.com/countryrank.php?year=2021&min=0&min_type=it
 COprod <- read_csv(here("data", "scimagojr country rank 2021.csv"), skip = 0) #load data
 
-#create meta-data with columns:         data type [options]
+#create meta-data with columns:       
 COprod_meta <- tibble("column name" = names(COprod), 
                       "description" = c("Rank of a given country across all Scimago Subject Areas.",
                                         "Country name.",
@@ -271,6 +271,73 @@ COprod_meta <- tibble("column name" = names(COprod),
                                                 "integer",
                                                 "numeric",
                                                 "integer"
+                                                ))
+```
+
+Load aythor contributorship data set:    
+
+```{r}
+#load people and tasks log table country productivity 
+AUcontr <- read_csv(here("data", "BP_awards_lists_SHAREDCOPY - people_tasks log.csv"), skip = 0, n_max = 19) #load data
+
+#simplify column names
+names(AUcontr) <- c("name", 
+                    "piloting_documentation",
+                    "register_plan",
+                    "plan_checks_feedback",
+                    "journal_screening_(SA)",
+                    "journal_screening_checks_(SA)",
+                    "awards_data_extraction_(SA)",
+                    "awards_data_extraction_checks_(SA)",
+                    "awardees_data_extraction_(SA)",
+                    "awardees_data_extraction_checks (SA)",
+                    "data_wrangling",
+                    "data_wrangling_checks",
+                    "draft_writing",
+                    "draft_checks_feedback",
+                    "finalising_manuscript",
+                    "finalising_manuscript_checks_feedback",
+                    "author_order",
+                    "author_position")
+
+#create meta-data for all columns:         
+AUcontr_meta <- tibble("column name" = names(AUcontr), 
+                      "description" = c("Name of the author",
+                                        "Contribution to project piloting and documentation (1 = yes, 0 = no)",
+                                        "Contribution to registering the project plan (1 = yes, 0 = no)",
+                                        "Contribution to checks and feedback on the project plan (1 = yes, 0 = no)",
+                                        "Contribution to journal screening and awards shortlisting (number of Subject Areas)",
+                                        "Contribution to cross-checking of journal screening and awards shortlisting (number of Subject Areas)",
+                                        "Contribution to awards data extractions (number of Subject Areas)",
+                                        "Contribution to cross-checking of awards data extractiosn (number of Subject Areas)",
+                                        "Contribution to gender and affiliation data extraction (number of Subject Areas)",
+                                        "Contribution to cross-checking of gender and affiliation data extraction (number of Subject Areas)",
+                                        "Contribution to data cleaning and pilot analyses (1 = yes, 0 = no)",
+                                        "Contribution to cross-checking ofdata cleaning and pilot analyses (1 = yes, 0 = no)",
+                                        "Contribution to draft writing (1 = yes, 0 = no)",
+                                        "Contribution to draft - checks and feedback (1 = yes, 0 = no)",
+                                        "Contribution to finalising draft (1 = yes, 0 = no)",
+                                        "Contribution to finalising draft - checks and feedback (1 = yes, 0 = no)",
+                                        "Numeric position on the authorship list",
+                                        "Position on the authorship list (first, middle, last)"),
+                      "data type [options]" = c("text",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "integer",
+                                                "text"
                                                 ))
 ```
 
@@ -308,6 +375,15 @@ kable(BPindiv_meta, "html") #%>%
   #scroll_box(width = "100%", height = "1500px")
 ```
 
+#### Table S4.    
+*Meta-data for the author contributions dataset*.    
+
+```{r}
+## making a html table:
+kable(AUcontr_meta, "html") #%>%
+  #kable_styling("striped", position = "left") #%>%
+  #scroll_box(width = "100%", height = "1500px")
+```
 
 # Supplementary Results
 
@@ -995,8 +1071,8 @@ Summary by focus on individuals (“individual award”) or whole article (“te
 
 - Total number of awards for individual authors: `r length(grep("yes", BPdata$Award_individual))` (`r round(length(grep("yes", BPdata$Award_individual)) / length(BPdata$Award_individual) * 100, 0)`%).    
 - Total number of awards for individual authors with any career stage being eligible: `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Career_stage == "any career stage"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Career_stage == "any career stage"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%).  
-- Total number of awards for individual authors with inflexible time limits for eligibility: `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%).   
-- Total number of awards for individual authors with flexible time limits for eligibility:  `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`%). Note: remaining are "not applicable", usually because tehre are no time-related limits for eligibility, e.g. due to any career stage being eligible.         
+- Total number of awards for individual authors with inflexible time limits for eligibility: `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "no"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`% of all individual awards).   
+- Total number of awards for individual authors with flexible time limits for eligibility:  `r length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"])` (`r round(length(BPdata$Award_name[BPdata$Award_individual == "yes" & BPdata$Flexible_eligibility == "yes"]) / sum(str_count(BPdata$Award_individual, "yes")) * 100, 0)`% of all individual awards). Note: remaining are "not applicable", usually because there were no time-related limits for eligibility, e.g. due to any career stage being eligible.           
 
 Summary by basic award characteristics:   
 
@@ -2890,7 +2966,7 @@ figure7A <- BPindiv %>%
     pattern_alpha = 0.5,
     pattern_fill    = 'white',
     pattern_colour  = 'white') +
-  scale_fill_manual(values = c("#748A52", "#8A6172")) +
+  scale_fill_manual(values = c("#8A6172", "#748A52")) +
   theme_bw() + 
   labs(fill = "Awardee profile shown:",
        pattern = "Awardee profile shown:",
@@ -2905,11 +2981,12 @@ figure7A <- BPindiv %>%
 
 ```{r}
 #table(BPindiv$awardee_photo_shown, useNA = "always")
+#table(BPindiv$awardee_photo_shown, BPindiv$award_year, useNA = "always")
 
 #plot overall
 figure7B <- BPindiv %>% 
-  mutate(awardee_photo_shown = factor(awardee_photo_shown, levels = (c("yes", 
-                                                                       "no")))) %>% #reorder value levels
+  mutate(awardee_photo_shown = factor(awardee_photo_shown, levels = (c("no", 
+                                                                       "yes")))) %>% #reorder value levels
   group_by(award_year) %>%
   count(awardee_photo_shown) %>%
   ggplot(aes(x = award_year, 
@@ -2925,11 +3002,11 @@ figure7B <- BPindiv %>%
     pattern_alpha = 0.5,
     pattern_fill    = 'white',
     pattern_colour  = 'white') +
-  scale_fill_manual(values = c("#748A52", "#8A6172")) +
+  scale_fill_manual(values = c("#8A6172", "#748A52")) +
   theme_bw() + 
-  labs(fill = "Awardee profile shown:",
-       pattern = "Awardee profile shown:",
-       pattern_angle = "Awardee profile shown:",
+  labs(fill = "Awardee photo shown:",
+       pattern = "Awardee photo shown:",
+       pattern_angle = "Awardee photo shown:",
        x = "Year", 
        y = "Awardee count") + 
   theme(legend.position = "top", 
@@ -3550,6 +3627,52 @@ model_Open_science <- glm(Open_science_num ~ Awardee_list_earliest_year_scaled,
 summary(model_Open_science) #slope ns
 # report::report(model_Open_science) #use the reports package (Makowski et al. 2021) to summarize the analysis
 ```
+
+
+## Author contributions    
+
+```{r}
+
+#save vector for  reordering in the plot
+position_order <- AUcontr$author_order
+
+#reorder in reverse author position
+AUcontr <- AUcontr %>% arrange(desc(position_order))
+
+#make names a factor
+AUcontr$name <- factor(AUcontr$name, levels = AUcontr$name) 
+
+#change to long format
+AUcontr_long <- gather(AUcontr, contribution, counts, piloting_documentation:finalising_manuscript_checks_feedback, factor_key = TRUE) 
+
+#remove rows with 0 counts
+AUcontr_long <- filter_if(AUcontr_long, is.numeric, all_vars((.) != 0))
+
+# #reinforce factor orders
+AUcontr_long$name <- factor(AUcontr_long$name, levels = AUcontr$name) 
+
+#make bubble plot 
+ggplot(AUcontr_long,
+       aes(x = fct_inorder(contribution), 
+           y = name,
+           colour = counts,
+           size = counts)) +
+  geom_point() +
+  geom_text(data = subset(AUcontr_long, grepl("(SA)", AUcontr_long$contribution)),
+            aes(label = counts), 
+            colour = "white", 
+            size = 3) +
+  scale_x_discrete(position = "top", expand = expansion(mult = 0.1)) +
+  scale_y_discrete(expand = expansion(mult = 0.1)) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 0, vjust = 0)) +
+  scale_size_continuous(range = c(2, 6)) + 
+  labs(x = NULL, y = NULL) +
+  theme(legend.position = "none")
+```
+
+#### Figure S54.    
+*Plot of individual author contributions. Authors are listed in the manuscript authorship order. Contributions are listed in chronological order. Dots without numbers indicate contributions. Numbers within dots show numbers of completed Subject Areas, as relevant*.   
 
 
 ## Session Info
