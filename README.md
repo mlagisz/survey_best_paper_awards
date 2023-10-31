@@ -60,10 +60,10 @@ The project has main 4 Stages:
 
 
 ## 🚉 Current status    
-Stage 1: Planning.    
+Stage 4: Manuscript.    
 
 ## 🚀 Protocol   
-Initial protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28). But we are now collecting some feedback and making minor adjustements to teh protocol before registering updated version.      
+Initial protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28). After collecting some feedback, we made some minor adjustements to the protocol before also registering the updated version on OSF.      
 
 ## ⏰ Code of Conduct   
 We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      
