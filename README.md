@@ -16,9 +16,9 @@ This project aims to conduct a survey of current practices in awarding “best p
 We expect that our findings will contribute to culture change fostering more equitable and open science.    
 
 ## 💛 Contributing  
-We invite early- and mid-career researchers across disciplines to contribute to the project.       
+We invited early- and mid-career researchers across disciplines to contribute to the project. The project is almost completed and we do not accept new contributors for now, but you are welcome to join our future projects!      
 
-Overall:   
+Overall, when you work with us:   
 - We welcome researchers with all backgrounds and walks of life o contribute to any Stage of this project (see below).   
 - You do not need any speciall research skills - just attention to detail, Internet access and some time available.   
 - Fill in the Expression Of Interest (EOI) form at: [https://forms.gle/J3WPWMTAyWJy3k1v9](https://forms.gle/J3WPWMTAyWJy3k1v9)
@@ -55,15 +55,40 @@ The project has main 4 Stages:
 - Contributors feedback.   
 - Final report.  
 - Sharing data and code in a GitHub repository.  
-- Preprint in MetaRxiv.   
-- Manuscript.   
+- Preprint in [BioRxiv](https://www.biorxiv.org/content/10.1101/2023.12.11.571170v1).    
+- Manuscript.  
+- Published in a journal.
 
 
 ## 🚉 Current status    
 Stage 4: Manuscript.    
 
+
 ## 🚀 Protocol   
-Initial protocol is now publicly archived on OSF at [https://osf.io/7ez28](https://osf.io/7ez28). After collecting some feedback, we made some minor adjustements to the protocol before also registering the updated version on OSF.      
+Final protocol is publicly archived on OSF at [https://osf.io/93256](https://osf.io/93256).    
+
+## 🚚 Supporting information 
+Supporting information, including all code, is available [here](/R/SI_methods_results.html).  
+
+## 💻 Data and code files      
+This repository hosts a copy of our final data and code files.   
+
+Data:     
+ - *BP_awards_lists_SHAREDCOPY - indiv_winners_20230915.csv* - data on the extracted characteristics of past individual award winners (focus on gener, and country of affiliation). Meta-data is provided in a separated .csv file.  
+ - *BP_awards_lists_SHAREDCOPY - indiv_winners_meta-data.csv* - meta-data file for the data on individual winners (BP_awards_lists_SHAREDCOPY - indiv_winners_20230915.csv).  
+ - *BP_awards_lists_SHAREDCOPY - people_tasks log.csv* - record of the researcher contributions to the project. First columns includes researcher names and the last two columns show the authorship order and position, respectively. Numerical columns with "(SA)" in the name represent counts of Subject Areas researcher contributed to, e.g., by screening or extractung award data. All other numerical columns are binary variables, where 1 stands for "yes" (i.e. "contributed""), and 0 stands for "no" (i.e. "not contributed").   
+ - *BP_awards_lists_SHAREDCOPY - scimagojr_2021_SA.csv* - list of 27 SCImago Subject Areas (SA) with progress and contributions records. The records include dates and names of contributors for different stages of the project workflow.   
+ - *duplicated_main_extractions.csv* - a subset of extracted award characteristics where data was extracted by at least two independendent researchers. Meta-data is the same as for the main dataset provided in the file Survey-Best_paper_awards (Responses)_SHAREDCOPY_checked.xlsx.  
+ - *scimagojr 2021  Subject Areas_screening.xlsx* - lists of journals for each of 27 SCImago Subject Areas (SA) with associated SCimago 2021 data and records of screening decisions and comments. Each SA is provided in a separate Excel tab, with forst tab providing meta-data.    
+ - *scimagojr country rank 2021.csv* - SCImago Country Rank data for 2021 dwonloaded from https://www.scimagojr.com/countryrank.php. The list of 235 countries with their data on: SCImago Rank, Country	Region,	Documents, 	Citable documents,	Citations,	Self-citations,	Citations per document,	H index. For information on the SCImago data sources see https://www.scimagojr.com/help.php?q=FAQ.    
+ - *Survey-Best_paper_awards (Responses)_SHAREDCOPY_checked.xlsx* - raw data extracted via Google Form and saved as a spreadsheet. The extracted data has been cross-checked and supplemented with comments, corrections and final inclusion decisions. Meta-data is provided in the second tab of the file.    
+
+
+R Code:   
+ - *SI_methods_results.Rmd* - R code and markdown file with all analyses and visualisations.   
+ - *SI_methods_results.html* - knitted code and results html file for the website.   
+
+The archived award descriptions are publicly available in a dedicated [OSF repo](https://osf.io/yzr7a/). Individual pdf files are compressed into a single file (awards_pages_pdf.zip) there.   
 
 ## ⏰ Code of Conduct   
 We expect all project contributors to familiarise themselves and follow our [CODE OF CONDUCT](/CODE_OF_CONDUCT.md).      

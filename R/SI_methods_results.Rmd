@@ -1,14 +1,16 @@
 ---
 title: "SI_methods_results"
-author: "ML"
-date: "27/10/2023"
+author: "M.Lagisz"
+date: "18/05/2024"
 output:
   html_document: 
    toc: true
+   toc_float: true
    toc_depth: 4
    number_sections: false
    theme: united
    highlight: tango
+   code_folding: hide
   word_document: 
    toc: true
    toc_depth: 4
@@ -25,10 +27,10 @@ editor_options:
 # Supplementary Methods  
 
 
-![project workflow](../BP_awards_workflow_v2.png){#id .class width = 50% height = 50%}.  
+![project workflow](../BP_awards_workflow_v2.png)  
 
 #### Figure S1.   
-*Project workflow*.   
+*Project workflow. When an award was linked to a journal which had more than one SCImago Subject Area (SA) assigned, we used award description to choose the most fitting SA for the award (i.e. we excluded copies of the award record from the less relevant SA – see the bottom right corner of the workflow)*.   
 
 ## Project aim and general approach.   
 “Best paper” (or equivalent) awards are usually associated with specific journals / societies / publishers. We aimed to conduct a systematic-like search to collect a sample of highly regarded awards (from top-ranking journals and societies) across a broad range of disciplines. We conducted the process collaboratively and transparently using shared Google Sheets documents (file copies were provided and re-integrated for participants who were not able to access online Google Docs).  
@@ -36,7 +38,7 @@ editor_options:
 The initial project description and contribution guidelines were publicly available as GitHub pages: https://mlagisz.github.io/survey_best_paper_awards/. Project contributors were recruited via Open Science communities and conferences. They helped to pilot the project procedures and provided feedback on the project protocol, which was then updated to it second version. roject contributors self-assigned to the individual project tasks. Their actual contributions (completed tasks) were recorded on Google Sheets. Detailed project procedures were shared as a dedicated Project Manual on Google Docs. This document, with incorporated users’ feedback, is available at https://docs.google.com/document/d/1aw_HhKawpi264njGi--Ms-x-bOs_uQJBiOepQKE89pQ/edit?usp=sharing.  
 
 ## Award inclusion criteria.   
-We followed pre-specified criteria outlined in the registered protocol (https://osf.io/7ez28) to increase data consistency and enable comparisons across disciplines:  
+We followed pre-specified criteria outlined in the registered protocol (https://osf.io/93256) to increase data consistency and enable comparisons across disciplines:  
 1. We only included awards for a single published research contribution in a format of a research article (theses / dissertations are allowed if published as a journal article).  
 2. W only included awards managed by a journal, publisher, or a learned society.  
 3. We excluded awards that are discontinued, and awards that are restricted to applicants from underrepresented groups, e.g., women-only / minorities-only awards.  
@@ -78,7 +80,7 @@ Extracted main award characteristics data (awarding body, description, etc.) has
 Extracted additional data (gender, affiliation country, and additional details on the award and winners) has been independently cross-checked by a second researcher (i.e. one that did not extract the data). Obvious mistakes were fixed and any unclear or disputable cases have been commented on and discussed before being resolved.   
 
 ## Deviations from the protocol.  
-The pre-registered protocol is available on OSF (https://osf.io/8mxpq/).  
+The pre-registered protocol is available on OSF (https://osf.io/93256).  
 We acknowledge the following deviations from the protocol:   
 
 1. We coded whether the award goes to an individual author (explicitly named) or to an article (without mentioning individual author/s). Some awards only lists winning articles and other focus on specific authors who were the prizewinners (sometimes even not mentioning for which exact article they got an award).   
@@ -121,9 +123,9 @@ All code and results are provided below. Code for figures used in the main text 
 NOTE: project github page can be found at https://github.com/mlagisz/survey_best_paper_awards.
 
 Loading packages and general settings.   
-```{r}
+```{r, warning = FALSE, message = FALSE}
 #set global code chunk parameters for knitting:  
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, results = "hide") 
 
 #load libraries (install if absent):  
 pacman::p_load(tidyverse, #various tools
@@ -142,6 +144,8 @@ pacman::p_load(tidyverse, #various tools
                 tidytext, #text processing
                 stopwords, #text processing
                 tokenizers, #text processing
+                maps, #geographical mapping
+                ggthemes, # plotting themes
                 ggpatterns, #patterning for plots
                 wacolors, #color-blind friendly color palettes
                 lme4, #linear models
@@ -166,11 +170,10 @@ Load SCImago Subject Area -level data set and an associated meta-data table:
 
 ```{r}
 # accessing all the sheets 
-#sheet_names <- excel_sheets(here("data", "scimagojr 2021  Subject Areas.xlsx"))
 sheet_names <- excel_sheets(here("data", "scimagojr 2021  Subject Areas_screening.xlsx"))
 sheet_names <- sheet_names[-1] #remove first sheet with meta-data
 SA_list_all <- lapply(sheet_names, function(x) 
-  {as.data.frame(read_excel(here("data", "scimagojr 2021  Subject Areas.xlsx"), sheet = x))}) #read all sheets
+  {as.data.frame(read_excel(here("data", "scimagojr 2021  Subject Areas_screening.xlsx"), sheet = x))}) #read all sheets
 names(SA_list_all) <- sheet_names  #rename list elements 
 #lapply(SA_list_all, names) #extract column names
 #unique(do.call(rbind, lapply(SA_list_all, names))) #making sure all have same column names
@@ -577,7 +580,8 @@ table(BPdata$Awardee_list_earliest_year, useNA = "always") #some old, 19 NA
 length(BPdata$Awardee_list_earliest_year[BPdata$Awardee_list_earliest_year > 2010 & !is.na(BPdata$Awardee_list_earliest_year)] ) #107 from 2011-2023
 ```
 
-#### Figure 1A - Screening effort: count numbers of journals screened to get 10 shortlisted awards:
+#### Figure 1A.  
+- Screening effort: count numbers of journals screened to get 10 shortlisted awards:
 
 ```{r}
 #load journal screening summary dataset:
@@ -628,7 +632,8 @@ figure1A <- BPscreening_long %>%
     scale_x_discrete(position = "top")
 ```
 
-#### Figure 1B - Counts of incuded awards with and without award description:    
+#### Figure 1B.  
+- Counts of incuded awards with and without award description:    
 
 ```{r}
 figure1B <- BPdata %>%
@@ -675,7 +680,8 @@ Number of awards with less than 100-word description: `r dim(BPdata[BPdata$Award
 
 Median length of award description: `r median(BPdata$Award_description_wordcount[BPdata$Award_description_wordcount != 0])`.   
 
-#### Figure 1C - Plot of award description lengths - overall:      
+#### Figure 1C.  
+- Plot of award description lengths - overall:      
 
 ```{r}
 figure1C <- BPdata %>% 
@@ -717,7 +723,8 @@ Plot of award description lengths - by Subject Area.
 NOTE: Using the year of oldest listed past winner as a proxy.   
 
 
-#### Figure 1D - award age verall distribution:    
+#### Figure 1D.    
+- award age overall distribution:    
 
 ```{r}
 #table(!is.na(BPdata$Awardee_list_earliest_year)) # values available
@@ -768,7 +775,8 @@ BPdata %>%
 #### Figure S4.   
 *Plot of award earliest extracted winner award year - by Subject Area*.     
 
-#### Figure 4 - Combine 4 panels and save:    
+#### Figure 1.  
+- Combine 4 panels and save:    
 
 ```{r}
 #assemble the panels using patchwork package
@@ -782,14 +790,15 @@ figure1 <- (figure1A + figure1B) / figure1C / figure1D +
 ```
 
 Summary by award age:    
-- Award year of the earliest listed winner used as a proxy: `r `min(BPdata$Awardee_list_earliest_year, na.rm = TRUE)`.    
+- Award year of the earliest listed winner used as a proxy: `r min(BPdata$Awardee_list_earliest_year, na.rm = TRUE)`.    
 - Number of awards with the earliest listed winner known: `r  dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year), ])[1]`.       
 - Number of awards with the earliest listed winner in or before 2000: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year <= 2000, ])[1]`.  
 - Number of awards with the earliest listed winner within 2001-2010: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year >= 2001 & BPdata$Awardee_list_earliest_year <= 2010, ])[1]`.  
 - Number of awards with the earliest listed winner within 2011-2023: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year >= 2011 & BPdata$Awardee_list_earliest_year <= 2023, ])[1]`.  
 
 
-#### Figure 2A - Awarding bodies:     
+#### Figure 2A.  
+- Awarding bodies:     
 
 ```{r}
 # table(BPdata$Awarding_journal == "NA")
@@ -847,7 +856,8 @@ figure2A <- BPdata2 %>%
          y = "Award count")
 ```
 
-#### Figure 2B - target awardee career stages:    
+#### Figure 2B.  
+- target awardee career stages:    
 
 ```{r}
 #table(BPdata$Career_stage) #mai options: student, early-career, mid-career, any career stage, unclear
@@ -878,7 +888,8 @@ figure2B <- BPdata2 %>%
          y = "")
 ```
 
-#### Figure 2 - combine 2 panels and save:   
+#### Figure 2.    
+- combine 2 panels and save:   
 
 ```{r}
 #assemble the panels using patchwork package
@@ -906,9 +917,11 @@ Summary by target career stage:
 - Total number of awards for ’mid-career’authors: `r length(grep("mid-career", BPdata$Career_stage))` (`r round(length(grep("mid-career", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
 
 
-#### Figure 3 - summary of extracted award characteristics:       
+#### Figure 3.  
+- summary of extracted award characteristics:       
 
 ```{r}
+#example of an unstacked bar plot for a single award characteristic - valying Open Science practices:
 #BPdata %>%
 #    count(Open_science) %>%
 #    ggplot(aes(x = Open_science, y = n, fill = Open_science)) + 
@@ -920,7 +933,8 @@ Summary by target career stage:
 #    theme(legend.position = "none", axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 3A - Summary plots of key award characteristics:
+#### Figure 3A.   
+- Summary plots of key award characteristics:
 
 ```{r}
 BPdata %>% 
@@ -974,15 +988,17 @@ figure3A <- BPdata3Along %>%
   ggplot(aes(x = var_name, 
              y = n, 
              fill = value, 
-             pattern = value, 
-             pattern_angle = value)) +
-  geom_bar_pattern(stat = "identity", 
-    pattern_density = 0.1,
-    pattern_spacing = 0.024,
-    pattern_key_scale_factor = 0.8,
-    pattern_alpha = 0.5,
-    pattern_fill    = 'white',
-    pattern_colour  = 'white') +
+             #pattern = value, 
+             #pattern_angle = value
+             )) +
+  #  geom_bar_pattern(stat = "identity", 
+    # pattern_density = 0.1,
+    # pattern_spacing = 0.024,
+    # pattern_key_scale_factor = 0.8,
+    # pattern_alpha = 0.5,
+    # pattern_fill    = 'white',
+    # pattern_colour  = 'white') +
+  geom_col(width = 0.9) +
   coord_flip() +
   scale_fill_manual(values = c("#8A6172", "#C0A43D",  "#CCBA98", "#748A52")) +
   scale_x_discrete(labels = rev(c("Eligibility career timeline is flexible", 
@@ -1001,7 +1017,8 @@ figure3A <- BPdata3Along %>%
   theme_classic()
 ```
 
-#### Figure 3B - Summary plots of key award characteristics:
+#### Figure 3B.    
+- Summary plots of key award characteristics:
 
 ```{r}
 BPdata %>% select(Criteria_transparency, 
@@ -1033,14 +1050,16 @@ figure3B <- BPdata3Blong %>%
   ggplot(aes(x = var_name, 
              y = n, 
              fill = value, 
-             pattern = value, 
-             pattern_angle = value)) +
-  geom_bar_pattern(stat = "identity", 
-    pattern_density = 0.1, 
-    pattern_key_scale_factor = 0.4,
-    pattern_alpha = 0.5,
-    pattern_fill    = 'white',
-    pattern_colour  = 'white') +
+             #pattern = value, 
+             #pattern_angle = value
+             )) +
+  # geom_bar_pattern(stat = "identity", 
+  #   pattern_density = 0.1, 
+  #   pattern_key_scale_factor = 0.4,
+  #   pattern_alpha = 0.5,
+  #   pattern_fill    = 'white',
+  #   pattern_colour  = 'white') +
+  geom_col(width = 0.9) +
   coord_flip() +
   scale_fill_manual(values = c("#8A6172", "#CCBA98", "#748A52" )) +
   #geom_bar(aes(fill = value), stat = "identity") +
@@ -1054,16 +1073,17 @@ figure3B <- BPdata3Blong %>%
   theme_classic()
 ```
 
-#### Figure 3 - combine 2 panels and save:      
+#### Figure 3.   
+- combine 2 panels and save:      
 
 ```{r}
 #assemble the panels using patchwork package
 figure3 <- figure3A / figure3B + 
-  plot_layout(ncol = 1, nrow = 2, heights = c(2, 1)) + 
+  plot_layout(ncol = 1, nrow = 2, heights = c(2, 0.9)) + 
   plot_annotation(tag_levels = "A") 
 
-#ggsave(plot = figure3, here("plots", "Fig3AB_award_descriptions_v1.png"), width = 18, height = 10, units = "cm", bg = "white", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure3, here("plots", "Fig3AB_award_descriptions_v1.pdf"), width = 18, height = 10, units = "cm", scale = 1.2)
+#ggsave(plot = figure3, here("plots", "Fig3AB_award_descriptions_v2.png"), width = 18, height = 10, units = "cm", bg = "white", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure3, here("plots", "Fig3AB_award_descriptions_v2.pdf"), width = 18, height = 10, units = "cm", scale = 1.2)
 ```
 
 
@@ -1515,12 +1535,21 @@ specific.words.mentions2 <- specific.words %>%
 # sum(str_detect(BPdata$Award_description, "best"), na.rm = TRUE) #82
 ```
 
-#### Figure 4A  - frequencies of specific words - all mentions in award descriptions.      
+#### Figure 4A.   
+- frequencies of specific words - all mentions in award descriptions.      
 
 ```{r}
+# create a simple data frame with two types of word counts:
 words.df <- tibble(Words = specific.words, 
                             Count_all = specific.words.mentions,
                             Count_once = specific.words.mentions2)
+
+# merge "rigor" and "rigour" as they are the same word with different spelling:
+words.df %>%
+  filter(Words %in% c("rigor", "rigour")) %>%
+  summarize(Words = "rigor/rigour", across(c(Count_all, Count_once), sum)) %>%
+  bind_rows(words.df, .) %>%
+  filter(! Words %in% c("rigor", "rigour")) -> words.df
 
 #wacolors$palouse #palette to be used
 
@@ -1540,7 +1569,8 @@ figure4A <- words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 4B - frequencies of specific words - first mentions in award descriptions.   
+#### Figure 4B.  
+- frequencies of specific words - first mentions in award descriptions.   
 
 ```{r}
 figure4B <- words.df %>%
@@ -1563,15 +1593,16 @@ figure4B <- words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 4 - combine 2 panels and save.   
+#### Figure 4.   
+- combine 2 panels and save.   
 
 ```{r}
 #assemble the panels using patchwork package
 figure4 <- figure4A / figure4B + 
   plot_layout(ncol = 2, nrow = 1) +
   plot_annotation(tag_levels = "A")
-#ggsave(plot = figure4, here("plots", "Fig4AB_words_counts_v1.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure4, here("plots", "Fig4AB_words_counts_v1.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
+#ggsave(plot = figure4, here("plots", "Fig4AB_words_counts_v2.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure4, here("plots", "Fig4AB_words_counts_v2.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
 ```
 
 ## Characteristics of past winners.   
@@ -1871,7 +1902,8 @@ BPindiv %>%
 #### Figure S24.   
 *Proportions of the past awardees (across all Subject Areas) assigned as female or male based on their pronouns, photos and names - by year. F = female/women, M = male/men*.    
 
-#### Figure 5A - plot of gender counts by decade:        
+#### Figure 5A.   
+- plot of gender counts by decade:        
 
 ```{r}
 ##See the actual counts
@@ -1904,7 +1936,9 @@ figure5A <- BPindiv %>%
        x = "Awardee counts")  
 ```
 
-#### Figure 5B - plot of gender proportions by decade:   
+
+#### Figure 5B.   
+- plot of gender proportions by decade:   
 
 ```{r}
 ## plot for a all Subject Areas by Decade - horizontal, stacked, with proportion values:
@@ -2128,7 +2162,7 @@ Affiliation country composition summary:
 
 - Out of `r dim(BPindiv)[1]` extracted individual winners, `r affiliation_indiv_count` (`r round(affiliation_indiv_count / dim(BPindiv)[1] * 100, 0)`%) had information on their affiliation country.   
 - Affiliations represented `r affiliation_country_count` countries (only first affiliation was used).   
-- Out of `r affiliation_indiv_count`  extracted individual winners with affiliation country information, `r affiliation_country_USA` (`r round(affiliation_country_USA / affiliation_indiv_count * 100, 0)` 47.5%) had USA as their affiliation country.    
+- Out of `r affiliation_indiv_count`  extracted individual winners with affiliation country information, `r affiliation_country_USA` (`r round(affiliation_country_USA / affiliation_indiv_count * 100, 0)`%) had USA as their affiliation country.    
 
 Incorporate data on Global South nations (United Nations FCFSSC) among past awardees:   
 
@@ -2277,6 +2311,7 @@ GS_nations <- c("India",
 #   count(affiliation_country) %>% 
 #   arrange(desc(n)) #%>% View() #table of GS nations and winner counts
 
+
 BPindiv %>% 
   filter(!is.na(affiliation_country)) %>% nrow() -> n_winners_affil #number of winners with affiliation country
 
@@ -2291,6 +2326,13 @@ BPindiv %>%
   filter(affiliation_country  %in% GS_nations) %>%
   count(affiliation_country) %>% 
   arrange(desc(n)) %>% select(n) %>% sum() -> n_winners_GS_indiv #number of individual winners from GS
+
+#count the total number of awardees from the Global South countries in the data set by decade:
+BPindiv %>% 
+  filter(!is.na(affiliation_country)) %>% 
+  filter(affiliation_country  %in% GS_nations) %>%
+  count(Decade) %>% 
+  arrange(desc(n)) #%>% View() #number of individual winners from GS by decade
 
 # Table of Count of winners by their country of affiliation 
 # country_count  %>% 
@@ -2395,7 +2437,8 @@ BPindiv %>%
 *Countries of first affiliation of the past awardees - by Subject Area (remaining countries grouped as “other”)*.
 
 
-#### Figure 5C - plot of counts of top 10 country affiliations by decade:
+#### Figure 5C.    
+- plot of counts of top 10 country affiliations by decade:
 
 ```{r}
 #top 10 countries by Decade - horizontal, stacked, with count values
@@ -2421,7 +2464,8 @@ figure5C <- BPindiv %>%
        x = "Awardee counts")  
 ```
 
-#### Figure 5D - proportions of top 10 affiliation countries by decade:    
+#### Figure 5D.    
+- proportions of top 10 affiliation countries by decade:    
 
 ```{r}
 #top 10 countries by Decade - horizontal, stacked, with proportion values
@@ -2472,7 +2516,9 @@ BPindiv %>%
 #### Figure S31.  
 *Counts of awardees countries of first affiliation - by decade and Subject Area*.    
 
-#### Figure 5 - combine 4 panels and save:
+
+#### Figure 5.   
+- combine 4 panels and save:
 
 ```{r}
 #assemble the panels using patchwork package
@@ -2482,6 +2528,112 @@ figure5 <- figure5A / figure5B / figure5C / figure5D +
 #ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v1.png"), width = 18, height = 14, units = "cm", dpi = "retina", scale = 1.2)
 #ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v1.pdf"), width = 18, height = 14, units = "cm", scale = 1.2)
 ```
+
+NEW
+
+Plot awardee counts by country affiliations overall for all countries as a map:  
+
+```{r}
+world_map <- map_data("world") %>% 
+  filter(! long > 180) %>% filter(region != "Antarctica") #prepare global map (remove Antarctica)
+
+countries_map <- world_map %>% distinct(region) #extract list of countries on the map
+
+BPindiv %>% 
+  filter(!is.na(affiliation_country)) %>% 
+  count(affiliation_country) -> mydata #get counts by country
+
+names(mydata) <- c("region", "Count") #adjust column names for easier merging
+countries_map0 <- left_join(countries_map, mydata) #merge two dataframes
+
+#main map plot with countries coloured by the count of past winners
+countries_map0 %>% 
+  ggplot(aes(fill = Count, map_id = region)) +
+  geom_map(map = world_map, color = "#7f7f7f", size = 0.25) +
+  scale_fill_gradient(low = "#fcf6d9", high = "#5a2c1c", na.value = "#ffffff", name = "Counts") +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  theme_map()
+```
+
+#### Figure S32.   
+*Map of counts of individual awardees by country of first affiliation*.    
+
+
+Make separate map plots by decade:   
+
+```{r, fig.height = 10, fig.width = 6, fig.align = "center"}
+## decade "2001-2010"
+BPindiv %>% 
+  filter(!is.na(affiliation_country)) %>% 
+  filter(Decade == "2001-2010") %>% 
+  count(affiliation_country) -> mydata_decade1 #get counts by country and decade
+
+names(mydata_decade1) <- c("region", "Count") #adjust column names for easier merging
+countries_map1 <- left_join(countries_map, mydata_decade1) #merge two dataframes
+
+#main map plot with countries coloured by the count of past winners for decade 2001-2010
+map1 <- countries_map1 %>% 
+  ggplot(aes(fill = Count, map_id = region)) +
+  geom_map(map = world_map, color = "#7f7f7f", size = 0.25) +
+  scale_fill_gradient(low = "#fcf6d9", high = "#5a2c1c", na.value = "#ffffff", name = "Counts") +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  ggtitle("2001-2010") +
+  theme_map() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+## decade "2011-2020"
+BPindiv %>% 
+  filter(!is.na(affiliation_country)) %>% 
+  filter(Decade == "2011-2020") %>% 
+  count(affiliation_country) -> mydata_decade2 #get counts by country and decade
+
+names(mydata_decade2) <- c("region", "Count") #adjust column names for easier merging
+countries_map2 <- left_join(countries_map, mydata_decade2) #merge two dataframes
+
+#main map plot with countries coloured by the count of past winners for decade 2011-2020
+map2 <- countries_map2 %>% 
+  ggplot(aes(fill = Count, map_id = region)) +
+  geom_map(map = world_map, color = "#7f7f7f", size = 0.25) +
+  scale_fill_gradient(low = "#fcf6d9", high = "#5a2c1c", na.value = "#ffffff", name = "Counts") +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  ggtitle("2011-2020") +
+  theme_map() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+## decade "2021-2022"
+BPindiv %>% 
+  filter(!is.na(affiliation_country)) %>% 
+  filter(Decade == "2021-2022") %>% 
+  count(affiliation_country) -> mydata_decade3 #get counts by country and decade
+
+names(mydata_decade3) <- c("region", "Count") #adjust column names for easier merging
+countries_map3 <- left_join(countries_map, mydata_decade3) #merge two dataframes
+
+#main map plot with countries coloured by the count of past winners for decade 2021-2022
+map3 <- countries_map3 %>% 
+  ggplot(aes(fill = Count, map_id = region)) +
+  geom_map(map = world_map, color = "#7f7f7f", size = 0.25) +
+  scale_fill_gradient(low = "#fcf6d9", high = "#5a2c1c", na.value = "#ffffff", name = "Counts") +
+  expand_limits(x = world_map$long, y = world_map$lat) +
+  coord_map("moll") +
+  ggtitle("2021-2022") +
+  theme_map() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+## assemble into a single plot
+map1 / map2 / map3 + 
+  plot_layout(ncol = 1, nrow = 3)
+```
+
+#### Figure S33.   
+*Map of counts of individual awardees by country of first affiliation split by decade*.    
+
+
 
 ## Country productivity context.  
 
@@ -2551,7 +2703,7 @@ COprod %>%
   scale_x_discrete(labels = NULL)  #used to remove vertical labels, also breaks = NULL
 ```
 
-#### Figure S32.   
+#### Figure S34.   
 *SCImago Country document productivity distribution for top 10 countries in the data set (remaining countries are grouped as “other”)*.    
 
 Plot of awardee gender counts by country affiliation by decade:
@@ -2579,7 +2731,7 @@ BPindiv %>%
        y = "Affiliation country")  
 ```
 
-#### Figure S33.   
+#### Figure S35.   
 *Counts of awardees by gender and by their country of affiliation and decade. F = female/women, M = male/men*.   
 
 ## Analyses of past awardees first names.  
@@ -2630,7 +2782,7 @@ BPindiv %>%
   labs(x = "Winners first name", y = "Count")   
 ```
 
-#### Figure S34.    
+#### Figure S36.    
 *Counts of awardee first names. Only names that appear more than 5 times are shown*.   
 
 ## Affiliation institutions of past awardees.   
@@ -2684,7 +2836,7 @@ BPindiv %>%
        y = "Count")   
 ```
 
-#### Figure S35.   
+#### Figure S37.   
 *Counts of awardee first affiliation institutions. Only institutions that appear more than 5 times are shown*.    
 
 
@@ -2692,7 +2844,8 @@ BPindiv %>%
 
 Cash award mentioned in `r sum(BPdata$Award_cash == "yes")` (`r round(sum(BPdata$Award_cash == "yes") / length(BPdata$Award_cash) * 100, 0)`%) award descriptions.   
 
-#### Figure 6A - mentions of cash awards:   
+#### Figure 6A.    
+- mentions of cash awards:   
 
 ```{r}
 #table(BPdata$Award_cash) #103 no, 111 yes
@@ -2761,11 +2914,12 @@ BPdata %>%
           axis.title.x = element_text(size = 10))
 ```
 
-#### Figure S36.   
+#### Figure S38.   
 *Counts of mentions of cash awards in award descriptions - by Subject Area*.    
 
 
-#### Figure 6B - disclosed values of cash awards:   
+#### Figure 6B.   
+- disclosed values of cash awards:   
 
 ```{r}
 #table(!is.na(BPdata$Award_cash_max_USD_pperson)) #96 values available
@@ -2790,7 +2944,8 @@ figure6B <- BPdata %>%
         axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 6 - Combine 2 panels and save:
+#### Figure 6.   
+- Combine 2 panels and save:
 
 ```{r}
 #assemble the panels using patchwork package
@@ -2818,7 +2973,7 @@ BPdata %>%
        x = "Award name") 
 ```
 
-#### Figure S37.   
+#### Figure S39.   
 *Awards with monetary values of at least 5,000 USD*.    
 
 
@@ -2840,7 +2995,7 @@ BPdata %>%
         axis.title.x = element_text(size = 10))
 ```
 
-#### Figure S37.   
+#### Figure S40.   
 *Awards with monetary values of at least 5,000 USD - by Subject Area*.    
 
 
@@ -2914,7 +3069,7 @@ words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-#### Figure S38.   
+#### Figure S41.   
 *Total counts of the top 50 most mentioned words (stemmed) in the parts of award description related to the prize value and related perks*.    
 
 
@@ -2937,11 +3092,12 @@ words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-#### Figure S39.   
+#### Figure S42.   
 *Total counts of the top 50 most mentioned words (stemmed) in the parts of award description related to the prize value and related perks - only one mention per award counted*.    
 
 
-#### Figure 7A - Individual winners data - presence of a personal profile:    
+#### Figure 7A.   
+- Individual winners data - presence of a personal profile:    
 
 ```{r}
 #note: based on individual winners data
@@ -2977,7 +3133,8 @@ figure7A <- BPindiv %>%
         axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 7B - Individual winners data - presence of a personal photo:   
+#### Figure 7B.    
+- Individual winners data - presence of a personal photo:   
 
 ```{r}
 #table(BPindiv$awardee_photo_shown, useNA = "always")
@@ -3013,7 +3170,8 @@ figure7B <- BPindiv %>%
         axis.title.x = element_text(size = 10))
 ```
 
-#### Figure 7 - combine 2 panels and save:   
+#### Figure 7.   
+- combine 2 panels and save:   
 
 ```{r}
 #assemble the panels using patchwork package
@@ -3074,7 +3232,7 @@ BPindiv %>%
   theme_minimal()
 ```
 
-#### Figure S40.   
+#### Figure S43.   
 *Plot of awardee gender, by award year*.   
 
 
@@ -3110,7 +3268,7 @@ BPindiv %>%
   theme_minimal()
 ```
 
-#### Figure S41.   
+#### Figure S44.   
 *Plot of awardee online profile, by award year*.    
 
 Models for individual winners online photo across years:    
@@ -3145,7 +3303,7 @@ BPindiv %>%
   theme_minimal()
 ```
 
-#### Figure S42.   
+#### Figure S45.   
 *Plot of awardee online photo, by award year*.   
 
 
@@ -3187,7 +3345,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S43.  
+#### Figure S46.  
 *Plot of whether award is individual-focused, by award age*.   
 
 Models:    
@@ -3234,7 +3392,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S44.   
+#### Figure S47.   
 *Plot of whether award has flexible eligibility, by award age*.
 
 Models:
@@ -3280,7 +3438,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S45.   
+#### Figure S48.   
 *Plot of whether award has assessor transparency, by award age*.   
 
 Models:
@@ -3307,7 +3465,7 @@ BPdata %>%
                                                 no = 0)) -> BPdata4
 ```
 
-Logistic plot of award integrity vrelatively to award age:    
+Logistic plot of award integrity relatively to award age:    
 
 ```{r}
 BPdata4 %>% 
@@ -3322,7 +3480,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S46.   
+#### Figure S49.   
 *Plot of whether award mentions assessment integrity, by award age*.    
 
 Models:   
@@ -3364,7 +3522,7 @@ BPdata4  %>%
   theme_minimal()
 ```
 
-#### Figure S47.   
+#### Figure S50.   
 *Plot of whether award explicitly allows self-nominations, by award age*.    
 
 Models:
@@ -3406,7 +3564,7 @@ BPdata4  %>%
   theme_minimal()
 ```
 
-#### Figure S48.   
+#### Figure S51.   
 *Plot of whether award nomination requires a letter, by award age*.    
 
 Models:    
@@ -3449,7 +3607,7 @@ BPdata4  %>%
   theme_minimal()
 ```
 
-#### Figure S49.   
+#### Figure S52.   
 *Plot of whether award contact details are provided, by award age*.   
 
 Models:    
@@ -3491,7 +3649,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S50.  
+#### Figure S53.  
 *Plot of whether award has transparent assessment criteria, by award age*.    
 
 Models:    
@@ -3532,7 +3690,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S51.   
+#### Figure S54.   
 *Plot of whether award description mentions impact metrics, by award age*.   
 
 Models:   
@@ -3574,7 +3732,7 @@ BPdata4 %>%
   theme_minimal() 
 ```
 
-#### Figure S52.   
+#### Figure S55.   
 *Plot of whether award description mentions impact metrics as only criteria, by award age*.    
 
 Models:
@@ -3615,7 +3773,7 @@ BPdata4 %>%
   theme_minimal()
 ```
 
-#### Figure S53.    
+#### Figure S56.    
 *Plot of whether award description mentions Open Science practices, by award age*.
 
 Models:
@@ -3671,12 +3829,12 @@ ggplot(AUcontr_long,
   theme(legend.position = "none")
 ```
 
-#### Figure S54.    
+#### Figure S57.    
 *Plot of individual author contributions. Authors are listed in the manuscript authorship order. Contributions are listed in chronological order. Dots without numbers indicate contributions. Numbers within dots show numbers of completed Subject Areas, as relevant*.   
 
 
 ## Session Info
 
-```{r}
+```{r, results = "asis"}
 sessionInfo()
 ```
