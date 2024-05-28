@@ -27,7 +27,7 @@ editor_options:
 # Supplementary Methods  
 
 ### Figure S1.   
-*Project workflow. When an award was linked to a journal which had more than one SCImago Subject Area (SA) assigned, we used award description to choose the most fitting SA for the award (i.e. we excluded copies of the award record from the less relevant SA – see the bottom right corner of the workflow)*.   
+*Project workflow. When an award was linked to a journal which had more than one SCImago Subject Area (SA) assigned, we used award description to choose the most fitting Subject Area for the award (i.e., we excluded copies of the award record from the less relevant Subject Area – see the bottom right corner of the workflow)*.   
 
 ![project workflow](../BP_awards_workflow_v2.png)  
 
