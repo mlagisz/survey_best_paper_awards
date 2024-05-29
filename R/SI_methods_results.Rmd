@@ -2556,15 +2556,15 @@ BPindiv %>%
 figure5 <- figure5A / figure5B / figure5C / figure5D + 
   plot_layout(ncol = 1, nrow = 4) +
   plot_annotation(tag_levels = "A")
-#ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v1.png"), width = 18, height = 14, units = "cm", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v1.pdf"), width = 18, height = 14, units = "cm", scale = 1.2)
+#ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v2.png"), width = 18, height = 14, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure5, here("plots", "Fig5ABCD_gender_countries_v2.pdf"), width = 18, height = 14, units = "cm", scale = 1.2)
 ```
 
 
 Plot awardee counts by country affiliations overall for all countries as a map:  
 
 ### Figure S32.   
-*Map of counts of individual awardees by country of first affiliation*.    
+*Map of counts of individual awardees by country of first affiliation. Map base source:   https://search.r-project.org/CRAN/refmans/maps/html/world.html  [R Package "maps" version 3.4.2]. Shapefile: Natural Earth  https://www.naturalearthdata.com/about/terms-of-use/*.     
 
 ```{r}
 world_map <- map_data("world") %>% 
@@ -2593,7 +2593,7 @@ countries_map0 %>%
 Make separate map plots by decade:   
 
 ### Figure S33.   
-*Map of counts of individual awardees by country of first affiliation split by decade*.    
+*Map of counts of individual awardees by country of first affiliation split by decade.  Map base source:   https://search.r-project.org/CRAN/refmans/maps/html/world.html  [R Package "maps" version 3.4.2]. Shapefile: Natural Earth  https://www.naturalearthdata.com/about/terms-of-use/*.      
 
 ```{r, fig.height = 10, fig.width = 6, fig.align = "center"}
 ## decade "2001-2010"
@@ -2899,16 +2899,18 @@ figure6A <- BPdata %>%
     ggplot(aes(x = 1, 
                y = n, 
                fill = Award_cash, 
-               pattern = Award_cash, 
-               pattern_angle = Award_cash)) +
-    geom_bar_pattern(stat = "identity", 
-    pattern_density = 0.1, 
-    pattern_size = 0.5,
-    pattern_spacing = 0.1,
-    pattern_key_scale_factor = 0.2,
-    pattern_alpha = 0.5,
-    pattern_fill    = 'white',
-    pattern_colour  = 'white') +
+               #pattern = Award_cash, 
+               #pattern_angle = Award_cash
+               )) +
+      geom_col(width = 0.9) +
+  # geom_bar_pattern(stat = "identity", 
+  #   pattern_density = 0.1, 
+  #   pattern_size = 0.5,
+  #   pattern_spacing = 0.1,
+  #   pattern_key_scale_factor = 0.2,
+  #   pattern_alpha = 0.5,
+  #   pattern_fill    = 'white',
+  #   pattern_colour  = 'white') +
     coord_flip() +
     scale_y_continuous(breaks = c(0, 50, 100, 150, 200, 250)) +
     theme_classic() + 
@@ -2990,8 +2992,8 @@ figure6B <- BPdata %>%
 figure6 <- figure6A / figure6B +
   plot_layout(nrow = 2, heights = c(1, 3)) +
   plot_annotation(tag_levels = "A")
-#ggsave(plot = figure6, here("plots", "Fig6AB_perks_v1.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure6, here("plots", "Fig6AB_perks_v1.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
+#ggsave(plot = figure6, here("plots", "Fig6AB_perks_v2.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure6, here("plots", "Fig6AB_perks_v2.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
 ```
 
 
@@ -3150,16 +3152,19 @@ figure7A <- BPindiv %>%
   ggplot(aes(x = award_year, 
              y = n, 
              fill = awardee_profile_shown, 
-             pattern = awardee_profile_shown, 
-             pattern_angle = awardee_profile_shown)) +
-  geom_bar_pattern(stat = "identity", 
-    pattern_density = 0.1, 
-    pattern_size = 0.4,
-    pattern_spacing = 0.015,
-    pattern_key_scale_factor = 0.5,
-    pattern_alpha = 0.5,
-    pattern_fill    = 'white',
-    pattern_colour  = 'white') +
+             #pattern = awardee_profile_shown, 
+             #pattern_angle = awardee_profile_shown
+             )) +
+        geom_col(width = 0.9) +
+  # geom_bar_pattern(stat = "identity", 
+  #   pattern_density = 0.1, 
+  #   pattern_size = 0.4,
+  #   pattern_spacing = 0.015,
+  #   pattern_key_scale_factor = 0.5,
+  #   pattern_alpha = 0.5,
+  #   pattern_fill    = 'white',
+  #   pattern_colour  = 'white') +
+  
   scale_fill_manual(values = c("#8A6172", "#748A52")) +
   theme_bw() + 
   labs(fill = "Awardee profile shown:",
@@ -3187,16 +3192,18 @@ figure7B <- BPindiv %>%
   ggplot(aes(x = award_year, 
              y = n, 
              fill = awardee_photo_shown, 
-             pattern = awardee_photo_shown, 
-             pattern_angle = awardee_photo_shown)) +
-  geom_bar_pattern(stat = "identity", 
-    pattern_density = 0.1, 
-    pattern_size = 0.4,
-    pattern_spacing = 0.015,
-    pattern_key_scale_factor = 0.5,
-    pattern_alpha = 0.5,
-    pattern_fill    = 'white',
-    pattern_colour  = 'white') +
+             #pattern = awardee_photo_shown, 
+             #pattern_angle = awardee_photo_shown
+             )) +
+        geom_col(width = 0.9) +
+  # geom_bar_pattern(stat = "identity", 
+  #   pattern_density = 0.1, 
+  #   pattern_size = 0.4,
+  #   pattern_spacing = 0.015,
+  #   pattern_key_scale_factor = 0.5,
+  #   pattern_alpha = 0.5,
+  #   pattern_fill    = 'white',
+  #   pattern_colour  = 'white') +
   scale_fill_manual(values = c("#8A6172", "#748A52")) +
   theme_bw() + 
   labs(fill = "Awardee photo shown:",
@@ -3217,8 +3224,8 @@ figure7B <- BPindiv %>%
 figure7 <- figure7A / figure7B +
   plot_layout(ncol = 2, nrow = 1) +
   plot_annotation(tag_levels = "A")
-#ggsave(plot = figure7, here("plots", "Fig7AB_perks_v1.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
-#ggsave(plot = figure7, here("plots", "Fig7AB_perks_v1.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
+#ggsave(plot = figure7, here("plots", "Fig7AB_perks_v2.png"), width = 18, height = 8, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(plot = figure7, here("plots", "Fig7AB_perks_v2.pdf"), width = 18, height = 8, units = "cm", scale = 1.2)
 ```
 
 
