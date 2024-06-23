@@ -1,7 +1,7 @@
 ---
 title: "SI_methods_results"
 author: "M.Lagisz"
-date: "18/05/2024"
+date: "23/06/2024"
 output:
   html_document: 
    toc: true
@@ -26,7 +26,7 @@ editor_options:
 
 # Supplementary Methods  
 
-### Figure S1.   
+### Figure A.   
 *Project workflow. When an award was linked to a journal which had more than one SCImago Subject Area (SA) assigned, we used award description to choose the most fitting Subject Area for the award (i.e., we excluded copies of the award record from the less relevant Subject Area – see the bottom right corner of the workflow)*.   
 
 ![project workflow](../BP_awards_workflow_v2.png)  
@@ -119,7 +119,7 @@ NOTE: Steps 3-6 were done for each data set in turn.
 All code and results are provided below. Code for figures used in the main text is shown, but not evaluated for this supplementary document, because these figures are presented in the main text.   
 
 
-## Project set up.  
+## R Project set up.  
 NOTE: project github page can be found at https://github.com/mlagisz/survey_best_paper_awards.
 
 Loading packages and general settings.   
@@ -277,7 +277,7 @@ COprod_meta <- tibble("column name" = names(COprod),
                                                 ))
 ```
 
-Load aythor contributorship data set:    
+Load author contributorship data set:    
 
 ```{r}
 #load people and tasks log table country productivity 
@@ -347,7 +347,7 @@ AUcontr_meta <- tibble("column name" = names(AUcontr),
 
 ## Meta-data tables.   
 
-### Table S1.    
+### Table A.    
 *Meta-data for the SCImago journal rankings by Subject Areas dataset*.   
 
 ```{r, results = "asis"}
@@ -357,7 +357,7 @@ kable(SAmeta, "html") #%>%
   #scroll_box(width = "100%", height = "1500px")
 ```
 
-### Table S2.   
+### Table B.   
 *Meta-data for the Best Paper awards dataset*.   
 
 ```{r, results = "asis"}
@@ -368,7 +368,7 @@ kable(BPmeta, "html") #%>%
 ```
 
 
-### Table S3.    
+### Table C.    
 *Meta-data for the individual winners dataset*.    
 
 ```{r, results = "asis"}
@@ -378,7 +378,7 @@ kable(BPindiv_meta, "html") #%>%
   #scroll_box(width = "100%", height = "1500px")
 ```
 
-### Table S4.    
+### Table D.    
 *Meta-data for the author contributions dataset*.    
 
 ```{r, results = "asis"}
@@ -392,9 +392,9 @@ kable(AUcontr_meta, "html") #%>%
 
 ## Characteristics of SCImago Subject Area (SA) journal lists and screening data.   
 
-Plot Number of journals per SCImago Subject Area:    
+Plot number of journals per SCImago Subject Area:    
 
-### Figure S2.    
+### Figure B.    
 *Counts of journal Titles per SCImago ranking lists by Subject Area*.     
 
 ```{r}
@@ -580,7 +580,7 @@ table(BPdata$Awardee_list_earliest_year, useNA = "always") #some old, 19 NA
 length(BPdata$Awardee_list_earliest_year[BPdata$Awardee_list_earliest_year > 2010 & !is.na(BPdata$Awardee_list_earliest_year)] ) #107 from 2011-2023
 ```
 
-### Figure 1A.  
+### Code for the main Figure 1A.  
 - Screening effort: count numbers of journals screened to get 10 shortlisted awards (main text figure - not shown in SI).   
 
 ```{r}
@@ -632,7 +632,7 @@ figure1A <- BPscreening_long %>%
     scale_x_discrete(position = "top")
 ```
 
-### Figure 1B.  
+### Code for the main Figure 1B.  
 - Counts of incuded awards with and without award description (main text figure - not shown in SI).       
 
 ```{r}
@@ -680,7 +680,7 @@ Number of awards with less than 100-word description: `r dim(BPdata[BPdata$Award
 
 Median length of award description: `r median(BPdata$Award_description_wordcount[BPdata$Award_description_wordcount != 0])`.   
 
-### Figure 1C.  
+### Code for the main Figure 1C.  
 - Plot of award description lengths - overall (main text figure - not shown in SI).         
 
 ```{r}
@@ -699,7 +699,7 @@ figure1C <- BPdata %>%
 
 Plot description word count by Subject Area:    
 
-### Figure S3.   
+### Figure C.   
 Plot of award description lengths - by Subject Area.   
 
 ```{r}
@@ -724,7 +724,7 @@ BPdata %>%
 NOTE: Using the year of oldest listed past winner as a proxy.   
 
 
-### Figure 1D.    
+### Code for the main Figure 1D.    
 - award age overall distribution  (main text figure - not shown in SI).       
 
 ```{r}
@@ -758,7 +758,7 @@ figure1D <- BPdata %>%
 
 Plot award ages by Subject Area:
 
-### Figure S4.   
+### Figure D.   
 *Plot of award earliest extracted winner award year - by Subject Area*.     
 
 ```{r}
@@ -776,7 +776,7 @@ BPdata %>%
         axis.title.x = element_text(size = 10))
 ```
 
-### Figure 1.  
+### Code for the main Figure 1.  
 - Combine 4 panels and save (main text figure - not shown in SI).      
 
 ```{r}
@@ -798,7 +798,7 @@ Summary by award age:
 - Number of awards with the earliest listed winner within 2011-2023: `r dim(BPdata[!is.na(BPdata$Awardee_list_earliest_year) & BPdata$Awardee_list_earliest_year >= 2011 & BPdata$Awardee_list_earliest_year <= 2023, ])[1]`.  
 
 
-### Figure 2A.  
+### Code for the main Figure 2A.  
 - Awarding bodies (main text figure - not shown in SI).        
 
 ```{r}
@@ -857,7 +857,7 @@ figure2A <- BPdata2 %>%
          y = "Award count")
 ```
 
-### Figure 2B.  
+### Code for the main Figure 2B.  
 - target awardee career stages (main text figure - not shown in SI).       
 
 ```{r}
@@ -889,7 +889,7 @@ figure2B <- BPdata2 %>%
          y = "")
 ```
 
-### Figure 2.    
+### Code for the main Figure 2.    
 - combine 2 panels and save (main text figure - not shown in SI).      
 
 ```{r}
@@ -918,7 +918,7 @@ Summary by target career stage:
 - Total number of awards for ’mid-career’authors: `r length(grep("mid-career", BPdata$Career_stage))` (`r round(length(grep("mid-career", BPdata$Career_stage)) / dim(BPdata)[1] * 100, 0)`).  
 
 
-### Figure 3.  
+### Prepare for the main Figure 3.  
 - summary of extracted award characteristics:       
 
 ```{r}
@@ -934,7 +934,7 @@ Summary by target career stage:
 #    theme(legend.position = "none", axis.title.x = element_text(size = 10))
 ```
 
-### Figure 3A.   
+### Code for the main Figure 3A.   
 - Summary plots of key award characteristics  (main text figure - not shown in SI).   
 
 ```{r}
@@ -1018,7 +1018,7 @@ figure3A <- BPdata3Along %>%
   theme_classic()
 ```
 
-### Figure 3B.    
+### Code for the main Figure 3B.    
 - Summary plots of key award characteristics (main text figure - not shown in SI).   
 
 ```{r}
@@ -1074,7 +1074,7 @@ figure3B <- BPdata3Blong %>%
   theme_classic()
 ```
 
-### Figure 3.   
+### Code for the main Figure 3.   
 - combine 2 panels and save (main text figure - not shown in SI).         
 
 ```{r}
@@ -1122,7 +1122,7 @@ Summary by award criteria characteristics:
 
 Plot Award_individual by Subject Area:   
 
-### Figure S5.   
+### Figure E.   
 *Individual-focused awards - by Subject Area*.  
 
 ```{r}
@@ -1152,7 +1152,7 @@ BPdata %>%
 
 Plot Flexible_eligibility by SA:   
 
-### Figure S6.   
+### Figure F.   
 *Award eligibility timeline flexibility - by Subject Area*.   
 
 ```{r}
@@ -1185,7 +1185,7 @@ BPdata %>%
 
 Plot Inclusivity_statement by SA:     
 
-### Figure S7.   
+### Figure G.   
 *Award inclusivity statement or encouragement - by Subject Area*.     
 
 ```{r}
@@ -1215,7 +1215,7 @@ BPdata %>%
 
 Plot Assessors_transparency by SA:    
 
-### Figure S8.    
+### Figure H.    
 *Award assessors transparency - by Subject Area*.    
 
 ```{r}
@@ -1244,7 +1244,7 @@ BPdata %>%
 
 Plot Process_transparency by SA:    
 
-### Figure S9.    
+### Figure I.    
 *Award process transparency - by Subject Area*.    
 
 ```{r}
@@ -1273,7 +1273,7 @@ BPdata %>%
 
 Plot Self_nomination by SA:
 
-### Figure S10.   
+### Figure J.   
 *Award self-nomination explicitly allowed - by Subject Area*.    
 
 ```{r}
@@ -1302,7 +1302,7 @@ BPdata %>%
 
 Plot Letter_required by SA:   
 
-### Figure S11.   
+### Figure K.   
 *Award nomination letter required - by Subject Area*.    
 
 ```{r}
@@ -1331,7 +1331,7 @@ BPdata %>%
 
 Plot Feedback_availability by SA:    
 
-### Figure S12.   
+### Figure L.   
 *Award feedback availability - by Subject Area*.    
 
 ```{r}
@@ -1360,7 +1360,7 @@ BPdata %>%
 
 Plot Award_contact_provided by SA:    
 
-### Figure S13.   
+### Figure M.   
 *Award contact point provided - by Subject Area*.    
 
 ```{r}
@@ -1389,7 +1389,7 @@ BPdata %>%
 
 Plot Criteria_transparency by SA:    
 
-### Figure S14.  
+### Figure N.  
 *Detailed award assessment criteria - by Subject Area*.   
 
 ```{r}
@@ -1418,7 +1418,7 @@ BPdata %>%
 
 Plot Award_impact_metrics_mentioned by SA:   
 
-### Figure S15.   
+### Figure O.   
 *Award assessment criteria with impact metrics - by Subject Area*.   
 
 ```{r}
@@ -1447,7 +1447,7 @@ BPdata %>%
 
 Plot Award_impact_metrics_only by SA:   
 
-### Figure S16.   
+### Figure P.   
 *Impact metrics as only criteria - award scores by Subject Area*.    
 
 ```{r}
@@ -1476,7 +1476,7 @@ BPdata %>%
 
 Plot Open_science by SA:    
 
-### Figure S17.   
+### Figure Q.   
 *Open Science practices - award scores by Subject Area*.    
 
 ```{r}
@@ -1549,7 +1549,7 @@ specific.words.mentions2 <- specific.words %>%
 # sum(str_detect(BPdata$Award_description, "best"), na.rm = TRUE) #82
 ```
 
-### Figure 4A.   
+### Code for the main Figure 4A.   
 - frequencies of specific words - all mentions in award descriptions (main text figure - not shown in SI).         
 
 ```{r}
@@ -1583,7 +1583,7 @@ figure4A <- words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-### Figure 4B.  
+### Code for the main Figure 4B.  
 - frequencies of specific words - first mentions in award descriptions (main text figure - not shown in SI).      
 
 ```{r}
@@ -1607,7 +1607,7 @@ figure4B <- words.df %>%
           axis.title.x = element_text(size = 10))
 ```
 
-### Figure 4.   
+### Code for the main Figure 4.   
 - combine 2 panels and save (main text figure - not shown in SI).      
 
 ```{r}
@@ -1632,7 +1632,7 @@ Number of Subject Areas with 0 extracted award winners: `r 27 - length(unique(BP
 
 Plot numbers of awards extracted per SA:   
 
-### Figure S18.   
+### Figure R.   
 *Number of awards with extracted individual winners data - counts by Subject Area*.    
 
 ```{r}
@@ -1697,7 +1697,7 @@ Total number of extracted records (awardee names): `r nrow(BPindiv)`.
 
 Plot numbers of records (names) extracted per SA:  
 
-### Figure S19.   
+### Figure S.   
 *Numbers of extracted individual winners - counts by Subject Area*.   
 
 ```{r}
@@ -1754,7 +1754,7 @@ Number of Subject Areas without any extracted individual winners: 8.
 
 Plot numbers of awards with individual winner data per year:   
 
-### Figure S20.  
+### Figure T.  
 *Number of extracted awards with individual winners names per year across all Subject Areas*.   
 
 ```{r}
@@ -1772,7 +1772,7 @@ BPindiv %>%
 
 Plot numbers of individual winner records per year:   
 
-### Figure S21.  
+### Figure U.  
 *Number of extracted individual winners per year across all Subject Areas*.    
 
 ```{r}
@@ -1842,7 +1842,7 @@ Total number of past awardees assigned as a man: `r table(BPindiv$awardee_gender
 
 Plot gender counts overall:  
 
-### Figure S22
+### Figure V.    
 *Counts of the past awardees (across all Subject Areas) assigned as female or male based on their pronouns, photos and names. F = female/women, M = male/men*.   
 
 ```{r}
@@ -1874,7 +1874,7 @@ BPindiv %>%
 
 Plot gender counts by year:   
 
-### Figure S23.   
+### Figure W.   
 *Counts of the past awardees (across all Subject Areas) assigned as female or male based on their pronouns, photos and names - by year. F = female/women, M = male/men*.    
 
 ```{r}
@@ -1900,7 +1900,7 @@ BPindiv %>%
 
 Plot gender proportion by year:   
 
-### Figure S24.   
+### Figure X.   
 *Proportions of the past awardees (across all Subject Areas) assigned as female or male based on their pronouns, photos and names - by year. F = female/women, M = male/men*.    
 
 ```{r}
@@ -1925,7 +1925,7 @@ BPindiv %>%
 ```
 
 
-### Figure 5A.   
+### Code for the main Figure 5A.   
 - plot of gender counts by decade (main text figure - not shown in SI).           
 
 ```{r}
@@ -1960,7 +1960,7 @@ figure5A <- BPindiv %>%
 ```
 
 
-### Figure 5B.   
+### Code for the main Figure 5B.   
 - plot of gender proportions by decade (main text figure - not shown in SI).      
 
 ```{r}
@@ -1988,7 +1988,7 @@ figure5B <- BPindiv %>%
 
 Plot gender counts by Subject Area:    
 
-### Figure S25.   
+### Figure Y.   
 *Counts of the past awardees assigned as female or male based on their pronouns, photos and names - by Subject Area. F = female/women, M = male/men*.     
 
 ```{r}
@@ -2022,7 +2022,7 @@ BPindiv %>%
 
 Plot gender proportions by Subject Area:   
 
-### Figure S26.   
+### Figure Z.   
 *Proportions of the past awardees assigned as female or male based on their pronouns, photos and names - by Subject Area. F = female/women, M = male/men*.    
 
 ```{r}
@@ -2050,7 +2050,7 @@ BPindiv %>%
 
 Plot awardee gender counts by Subject Area and Decade:   
 
-### Figure S27.   
+### Figure A2.   
 *Counts of the past awardees assigned as female or male based on their pronouns, photos and names - by Subject Area and Decade. F = female/women, M = male/men*.   
 
 ```{r}
@@ -2377,7 +2377,7 @@ Summary of awardees from the Global South:
 
 Plot awardee counts by country affiliations overall for all countries:  
 
-### Figure S28.   
+### Figure B2.   
 *All countries of affiliation of the past awardees*.   
 
 ```{r}
@@ -2412,7 +2412,7 @@ BPindiv %>%
 
 Plot awardee counts for only top 10 countries with most awardees:   
 
-### Figure S29.   
+### Figure C2.   
 *Countries of first affiliation of the past awardees - top 10 countries only (remaining countries grouped as “other” and coloured black)*.    
 
 ```{r}
@@ -2437,7 +2437,7 @@ BPindiv %>%
 
 Plot country of affiliation counts by Subject Area:   
 
-### Figure S30.  
+### Figure D2.  
 *Countries of first affiliation of the past awardees - by Subject Area (remaining countries grouped as “other”)*.
 
 ```{r}
@@ -2468,7 +2468,7 @@ BPindiv %>%
 ```
 
 
-### Figure 5C.    
+### Code for the main Figure 5C.    
 - plot of counts of top 10 country affiliations by decade (main text figure - not shown in SI).   
 
 ```{r}
@@ -2495,7 +2495,7 @@ figure5C <- BPindiv %>%
        x = "Awardee counts")  
 ```
 
-### Figure 5D.    
+### Code for the main Figure 5D.    
 - proportions of top 10 affiliation countries by decade (main text figure - not shown in SI).       
 
 ```{r}
@@ -2522,7 +2522,7 @@ figure5D <- BPindiv %>%
 
 Plot awardee country of affiliation counts by decade and by Subject Area:
 
-### Figure S31.  
+### Figure E2.  
 *Counts of awardees countries of first affiliation - by decade and Subject Area*.    
 
 ```{r}
@@ -2548,7 +2548,7 @@ BPindiv %>%
 ```
 
 
-### Figure 5.   
+### Code for the main Figure 5.   
 - combine 4 panels and save (main text figure - not shown in SI).   
 
 ```{r}
@@ -2563,7 +2563,7 @@ figure5 <- figure5A / figure5B / figure5C / figure5D +
 
 Plot awardee counts by country affiliations overall for all countries as a map:  
 
-### Figure S32.   
+### Figure F2.   
 *Map of counts of individual awardees by country of first affiliation. Map base source:   https://search.r-project.org/CRAN/refmans/maps/html/world.html  [R Package "maps" version 3.4.2]. Shapefile: Natural Earth  https://www.naturalearthdata.com/about/terms-of-use/*.     
 
 ```{r}
@@ -2592,7 +2592,7 @@ countries_map0 %>%
 
 Make separate map plots by decade:   
 
-### Figure S33.   
+### Figure G2.   
 *Map of counts of individual awardees by country of first affiliation split by decade.  Map base source:   https://search.r-project.org/CRAN/refmans/maps/html/world.html  [R Package "maps" version 3.4.2]. Shapefile: Natural Earth  https://www.naturalearthdata.com/about/terms-of-use/*.      
 
 ```{r, fig.height = 10, fig.width = 6, fig.align = "center"}
@@ -2713,7 +2713,7 @@ COprod$Country_affil <- recode(COprod$Country,
 
 Plot for the top 10 most productive countries:   
 
-### Figure S34.   
+### Figure H2.   
 *SCImago Country document productivity distribution for top 10 countries in the data set (remaining countries are grouped as “other”)*.    
 
 ```{r}
@@ -2739,7 +2739,7 @@ COprod %>%
 
 Plot of awardee gender counts by country affiliation by decade:
 
-### Figure S35.   
+### Figure I2.   
 *Counts of awardees by gender and by their country of affiliation and decade. F = female/women, M = male/men*.   
 
 ```{r}
@@ -2799,7 +2799,7 @@ Total number of unique past awardee first names in the dataset: `r length(unique
 
 Plot counts of first awardees names that appear more than 5 times:   
 
-### Figure S36.    
+### Figure J2.    
 *Counts of awardee first names. Only names that appear more than 5 times are shown*.   
 
 ```{r}
@@ -2823,6 +2823,7 @@ BPindiv %>%
 ## Affiliation institutions of past awardees.   
 
 Process and find most common affiliation institutions:   
+
 ```{r}
 #length(unique(BPindiv$affiliation_institution)) #672 unique  names, note some require cleaning from extra information after ,
 
@@ -2854,7 +2855,7 @@ Total number of unique affiliation institution names in the dataset: `r length(u
 
 Plot counts of institution names that appear more than 5 times:   
 
-### Figure S37.   
+### Figure K2.   
 *Counts of awardee first affiliation institutions. Only institutions that appear more than 5 times are shown*.    
 
 ```{r}
@@ -2881,7 +2882,7 @@ BPindiv %>%
 Cash award mentioned in `r sum(BPdata$Award_cash == "yes")` (`r round(sum(BPdata$Award_cash == "yes") / length(BPdata$Award_cash) * 100, 0)`%) award descriptions.   
 
 
-### Figure 6A.    
+### Code for the main Figure 6A.    
 - mentions of cash awards (main text figure - not shown in SI).      
 
 ```{r}
@@ -2925,7 +2926,7 @@ figure6A <- BPdata %>%
 
 Plot of cash awards mentioned per Subject Area:   
 
-### Figure S38.   
+### Figure L2.   
 *Counts of mentions of cash awards in award descriptions - by Subject Area*.    
 
 ```{r}
@@ -2957,7 +2958,7 @@ BPdata %>%
 ```
 
 
-### Figure 6B.   
+### Code for the main Figure 6B.   
 - disclosed values of cash awards (main text figure - not shown in SI).      
 
 ```{r}
@@ -2984,7 +2985,7 @@ figure6B <- BPdata %>%
 ```
 
 
-### Figure 6.   
+### Code for the main Figure 6.   
 - Combine 2 panels and save (main text figure - not shown in SI).   
 
 ```{r}
@@ -2999,7 +3000,7 @@ figure6 <- figure6A / figure6B +
 
 Plot of awards with highest cash amounts:   
 
-### Figure S39.   
+### Figure M2.   
 *Awards with monetary values of at least 5,000 USD*.    
 
 ```{r}
@@ -3019,7 +3020,7 @@ BPdata %>%
 
 Plot disclosed cash amounts by Subject Area:    
 
-### Figure S40.   
+### Figure N2.   
 *Awards with monetary values of at least 5,000 USD - by Subject Area*.    
 
 ```{r}
@@ -3089,7 +3090,7 @@ specific.words.mentions3 <- specific.words2 %>%
 
 Plot frequencies of specific words - all mentions in award cash descriptions:    
 
-### Figure S41.   
+### Figure O2.   
 *Total counts of the top 50 most mentioned words (stemmed) in the parts of award description related to the prize value and related perks*.    
 
 ```{r}
@@ -3115,7 +3116,7 @@ words.df %>%
 
 Plot frequencies of specific words - first mentions in perks and benefits descriptions:    
 
-### Figure S42.   
+### Figure P2.   
 *Total counts of the top 50 most mentioned words (stemmed) in the parts of award description related to the prize value and related perks - only one mention per award counted*.    
 
 ```{r}
@@ -3136,7 +3137,7 @@ words.df %>%
 ```
 
 
-### Figure 7A.   
+### Code for the main Figure 7A.   
 - Individual winners data - presence of a personal profile (main text figure - not shown in SI).       
 
 ```{r}
@@ -3176,7 +3177,7 @@ figure7A <- BPindiv %>%
         axis.title.x = element_text(size = 10))
 ```
 
-### Figure 7B.    
+### Code for the main Figure 7B.    
 - Individual winners data - presence of a personal photo (main text figure - not shown in SI).      
 
 ```{r}
@@ -3216,7 +3217,7 @@ figure7B <- BPindiv %>%
 ```
 
 
-### Figure 7.   
+### Code for the main Figure 7.   
 - combine 2 panels and save (main text figure - not shown in SI).      
 
 ```{r}
@@ -3266,7 +3267,7 @@ plogis(summary(model_gender)$coef[1,1])*100 #calculate % difference between gend
 
 Logistic plot for awardee gender by year:
 
-### Figure S43.   
+### Figure Q2.   
 *Plot of awardee gender, by award year*.   
 
 ```{r}
@@ -3303,7 +3304,7 @@ summary(model_profile) #slope 1.11 signif
  
 Logistic plot for awardee online profile by year:   
 
-### Figure S44.   
+### Figure R2.   
 *Plot of awardee online profile, by award year*.    
 
 ```{r}
@@ -3339,7 +3340,7 @@ summary(model_photo) #slope 1.18 signif
 
 Logistic plot for awardee online photo by year:   
 
-### Figure S45.   
+### Figure S2.   
 *Plot of awardee online photo, by award year*.   
 
 ```{r}
@@ -3382,7 +3383,7 @@ BPdata %>%
 
 Logistic plot for individual awards relatively to award age:   
 
-### Figure S46.  
+### Figure T2.  
 *Plot of whether award is individual-focused, by award age*.   
 
 ```{r}
@@ -3430,7 +3431,7 @@ BPdata %>%
 
 Logistic plot for award flexibility relatvely to award age:
 
-### Figure S47.   
+### Figure U2.   
 *Plot of whether award has flexible eligibility, by award age*.
 
 ```{r}
@@ -3477,7 +3478,7 @@ BPdata %>%
 
 Logistic plot of assessor transparency versus award age:   
 
-### Figure S48.   
+### Figure V2.   
 *Plot of whether award has assessor transparency, by award age*.   
 
 ```{r}
@@ -3521,7 +3522,7 @@ BPdata %>%
 
 Logistic plot of award integrity relatively to award age:    
 
-### Figure S49.   
+### Figure W2.   
 *Plot of whether award mentions assessment integrity, by award age*.    
 
 ```{r}
@@ -3565,7 +3566,7 @@ BPdata %>%
 
 Logistic plot of self nominations relatively to award age:    
 
-### Figure S50.   
+### Figure X2.   
 *Plot of whether award explicitly allows self-nominations, by award age*.    
 
 ```{r}
@@ -3609,7 +3610,7 @@ BPdata %>%
 
 Logistic plot for nomination letters relatively to award age:   
 
-### Figure S51.   
+### Figure Y2.   
 *Plot of whether award nomination requires a letter, by award age*.    
 
 ```{r}
@@ -3654,7 +3655,7 @@ BPdata %>%
 
 Logistic plot of award contact details relatively to award age:   
 
-### Figure S52.   
+### Figure Z2.   
 *Plot of whether award contact details are provided, by award age*.   
 
 ```{r}
@@ -3698,7 +3699,7 @@ filter(!is.na(Awardee_list_earliest_year)) %>%
 
 Logistic plot of criteria transparency vs. award age:   
 
-### Figure S53.  
+### Figure A3.  
 *Plot of whether award has transparent assessment criteria, by award age*.    
 
 ```{r}
@@ -3741,7 +3742,7 @@ BPdata %>%
 
 Logistic plot of mentios of impact metrics relatively to teh award age:   
 
-### Figure S54.   
+### Figure B3.   
 *Plot of whether award description mentions impact metrics, by award age*.   
 
 ```{r}
@@ -3785,7 +3786,7 @@ BPdata %>%
 
 Logistic plot of impact metrics as only criteria relatively to award age:    
 
-### Figure S55.   
+### Figure C3.   
 *Plot of whether award description mentions impact metrics as only criteria, by award age*.    
 
 ```{r}
@@ -3829,7 +3830,7 @@ BPdata %>%
 
 Logistic plot of valueing Open Science practices relatively to award age:   
 
-### Figure S56.    
+### Figure D3.    
 *Plot of whether award description mentions Open Science practices, by award age*.
 
 ```{r}
@@ -3860,7 +3861,7 @@ summary(model_Open_science) #slope ns
 
 ## Author contributions    
 
-### Figure S57.    
+### Figure E3.    
 *Plot of individual author contributions. Authors are listed in the manuscript authorship order. Contributions are listed in chronological order. Dots without numbers indicate contributions. Numbers within dots show numbers of completed Subject Areas, as relevant*.   
 
 ```{r}

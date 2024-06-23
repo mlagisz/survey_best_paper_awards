@@ -61,7 +61,7 @@ The project has main 4 Stages:
 
 
 ## 🚉 Current status    
-Stage 4: Manuscript.    
+Stage 4: Manuscript accepted at PLOS Biology.    
 
 
 ## 🚀 Protocol   
