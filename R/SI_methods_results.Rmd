@@ -3902,6 +3902,10 @@ ggplot(AUcontr_long,
   scale_size_continuous(range = c(2, 6)) + 
   labs(x = NULL, y = NULL) +
   theme(legend.position = "none")
+
+#ggsave(here("plots", "Fig_contibutorship.png"), width = 18.6, height = 16, units = "cm", dpi = "retina", scale = 1.2)
+#ggsave(here("plots", "Fig_contibutorship.pdf"), width = 18.6, height = 16, units = "cm", scale = 1.2)
+```
 ```
 
 
